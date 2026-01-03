@@ -1,0 +1,141 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// User model - stores user accounts
+model User {
+  id        String   @id @default(uuid()) // Unique ID, auto-generated UUID
+  email     String   @unique // Email must be unique (no duplicates)
+  password  String   // Hashed password (we'll hash it before saving)
+  name      String?   // Optional name (can be null)
+  createdAt DateTime @default(now()) // Auto-set when created
+  updatedAt DateTime @updatedAt // Auto-updated when record changes
+
+  // Relations
+  profile UserProfile? // One user has one profile
+  workoutPlans WorkoutPlan[] // One user has many workout plans
+  mealPlans MealPlan[] // One user has many meal plans
+  progressEntries Progress[] // One user has many progress entries
+  chatMessages ChatMessage[] // One user has many chat messages
+}
+
+// UserProfile model - stores user's fitness profile
+model UserProfile {
+  id        String   @id @default(uuid())
+  userId    String   @unique // One profile per user
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  // Basic info
+  age       Int?     // Age in years
+  gender    String?  // 'male', 'female', 'other'
+  height    Float?   // Height in cm
+  currentWeight Float? // Current weight in kg
+  targetWeight  Float? // Target weight in kg
+  
+  // Goals
+  primaryGoal String? // 'lose_weight', 'build_muscle', 'get_fit', 'maintain'
+  activityLevel String? // 'sedentary', 'light', 'moderate', 'very_active'
+  
+  // Preferences
+  dietaryRestrictions String[] // Array of restrictions: ['vegetarian', 'gluten-free']
+  availableEquipment  String[] // Array of equipment: ['dumbbells', 'resistance_bands']
+  workoutDaysPerWeek  Int?     // How many days per week they want to workout
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// WorkoutPlan model - stores generated workout plans
+model WorkoutPlan {
+  id          String   @id @default(uuid())
+  userId      String   // Which user this plan belongs to
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  name        String   // Plan name: "Upper Body Strength"
+  description String?  // Optional description
+  
+  // Exercises stored as JSON (flexible structure)
+  exercises   String   @default("[]") // JSON array of exercises
+  
+  duration    Int?     // Duration in minutes
+  difficulty  String?  // 'beginner', 'intermediate', 'advanced'
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+// MealPlan model - stores generated meal plans
+model MealPlan {
+  id          String   @id @default(uuid())
+  userId      String   // Which user this plan belongs to
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  name        String   // Plan name: "Weekly Meal Plan"
+  description String?  // Optional description
+  
+  // Meals stored as JSON (breakfast, lunch, dinner, snacks)
+  meals       String   @default("[]") // JSON array of meals
+  
+  // Nutrition info
+  calories    Int?     // Total calories per day
+  protein     Float?   // Protein in grams
+  carbs       Float?   // Carbs in grams
+  fats        Float?   // Fats in grams
+  
+  startDate   DateTime? // When the plan starts
+  endDate     DateTime? // When the plan ends
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+// Progress model - tracks user's progress over time
+model Progress {
+  id        String   @id @default(uuid())
+  userId    String   // Which user this progress entry belongs to
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  date      DateTime @default(now()) // Date of this progress entry
+  
+  // Weight tracking
+  weight    Float?   // Weight in kg
+  
+  // Body measurements (optional)
+  measurements String? // JSON: { "chest": 100, "waist": 80, "hips": 95 }
+  
+  // Notes and mood
+  notes     String?  // User's notes about how they feel
+  mood      String?  // 'great', 'good', 'okay', 'tired'
+  
+  // Photos (we'll store file paths)
+  photoUrl  String?  // URL/path to progress photo
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// ChatMessage model - stores conversations with AI trainer
+model ChatMessage {
+  id        String   @id @default(uuid())
+  userId    String   // Which user sent/received this message
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  role      String   // 'user' or 'assistant' (AI)
+  content   String   // The message content
+  
+  // Optional metadata
+  metadata  String?  // JSON: additional data if needed
+  
+  createdAt DateTime @default(now())
+}
