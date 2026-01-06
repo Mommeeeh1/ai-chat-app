@@ -9,7 +9,7 @@ module.exports = {
   // Where to find our test files
   // Look for files like: auth.service.test.ts
   testMatch: [
-    '**/__tests__/**/*.ts',
+    '**/services/__tests__/**/*.ts',
     '**/*.test.ts',
     '**/*.spec.ts'
   ],
@@ -18,7 +18,8 @@ module.exports = {
   testPathIgnorePatterns: [
     '/node_modules/',
     '/dist/',
-    '/build/'
+    '/build/',
+    '/__tests__/integration/'  // Exclude integration tests from unit tests
   ],
   
   // Code coverage settings

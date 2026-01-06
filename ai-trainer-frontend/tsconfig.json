@@ -24,7 +24,7 @@
   },
   "include": [
     "next-env.d.ts",
-    "jest.d.ts",
+    "__tests__/config/jest.d.ts",
     "**/*.ts",
     "**/*.tsx",
     ".next/types/**/*.ts",

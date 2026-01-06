@@ -11,10 +11,11 @@ const config: Config = {
   coverageProvider: 'v8',
   testEnvironment: 'jsdom',
   // Add more setup options before each test is run
-  setupFilesAfterEnv: ['<rootDir>/jest.setup.ts'],
+  setupFilesAfterEnv: ['<rootDir>/__tests__/config/jest.setup.ts'],
   moduleNameMapper: {
     // Handle module aliases (this will be automatically configured for you soon)
     '^@/(.*)$': '<rootDir>/$1',
+    '^@/test-utils$': '<rootDir>/__tests__/utils/test-utils',
   },
   collectCoverageFrom: [
     'app/**/*.{js,jsx,ts,tsx}',

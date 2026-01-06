@@ -2,11 +2,11 @@
 node_modules
 npm-debug.log
 yarn-error.log
+package-lock.json
 
-# Build outputs
-dist
-build
+# TypeScript
 *.tsbuildinfo
+tsconfig.json
 
 # Environment files
 .env
@@ -31,24 +31,24 @@ Thumbs.db
 # Testing
 coverage
 .nyc_output
+**/__tests__
 *.test.ts
-__tests__
+jest.config.js
 
 # Documentation
 *.md
 Documents
+docs
 
 # Logs
 logs
 *.log
 
-# Prisma migrations (copy them explicitly if needed)
-# prisma/migrations
+# Prisma
+prisma/migrations
 
 # Other
 .editorconfig
 .prettierrc
 .eslintrc
-jest.config.js
-
-
+.eslintrc.json
