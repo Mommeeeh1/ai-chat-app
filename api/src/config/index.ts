@@ -15,14 +15,14 @@ const envSchema = z.object({
   HOST: z.string().default('localhost'),
 
   // Security
-  JWT_SECRET: z.string().min(32, 'JWT_SECRET must be at least 32 characters'),
+  JWT_SECRET: z.string().min(32, 'JWT_SECRET must be at least 32 characters').default('test-jwt-secret-for-testing-minimum-32-chars'),
   JWT_EXPIRES_IN: z.string().default('7d'),
 
   // CORS
   CORS_ORIGIN: z.string().url().default('http://localhost:3001'),
 
   // OpenAI
-  OPENAI_API_KEY: z.string().startsWith('sk-', 'OPENAI_API_KEY must start with sk-'),
+  OPENAI_API_KEY: z.string().startsWith('sk-', 'OPENAI_API_KEY must start with sk-').default('sk-test-key'),
   OPENAI_MODEL: z.string().default('gpt-3.5-turbo'),
   OPENAI_MAX_TOKENS: z.string().regex(/^\d+$/).transform(Number).default('500'),
 
