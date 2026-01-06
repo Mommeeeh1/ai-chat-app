@@ -7,7 +7,7 @@ const mockLogout = jest.fn();
 
 // Mock auth context to prevent async calls in tests
 jest.mock('./contexts/auth-context', () => {
-  const React = require('react');
+  const React = jest.requireActual<typeof import('react')>('react');
   
   return {
     AuthContext: React.createContext({
@@ -16,7 +16,7 @@ jest.mock('./contexts/auth-context', () => {
       logout: mockLogout,
       isLoading: false,
     }),
-    AuthProvider: ({ children }: { children: any }) => {
+    AuthProvider: ({ children }: { children: React.ReactNode }) => {
       // Return children directly - no async calls, no state updates
       return React.createElement(React.Fragment, null, children);
     },
@@ -68,8 +68,10 @@ const localStorageMock = {
   setItem: jest.fn(),
   removeItem: jest.fn(),
   clear: jest.fn(),
+  length: 0,
+  key: jest.fn(() => null),
 };
-global.localStorage = localStorageMock as any;
+global.localStorage = localStorageMock as Storage;
 
 // Mock scrollIntoView (not available in jsdom)
 Element.prototype.scrollIntoView = jest.fn();
