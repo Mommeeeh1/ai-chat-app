@@ -65,3 +65,6 @@ dump.rdb
 
 # Debug
 .vscode/launch.json
+
+# Documentation
+docs/

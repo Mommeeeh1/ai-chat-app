@@ -1,0 +1,28 @@
+{
+  "name": "ai-trainer",
+  "version": "1.0.0",
+  "description": "AI-powered personal fitness trainer application",
+  "private": true,
+  "scripts": {
+    "dev": "concurrently \"npm run dev:api\" \"npm run dev:frontend\"",
+    "dev:api": "cd api && npm run dev",
+    "dev:frontend": "cd ai-trainer-frontend && npm run dev",
+    "build": "npm run build:api && npm run build:frontend",
+    "build:api": "cd api && npm run build",
+    "build:frontend": "cd ai-trainer-frontend && npm run build",
+    "test": "npm run test:api && npm run test:frontend",
+    "test:api": "cd api && npm test",
+    "test:frontend": "cd ai-trainer-frontend && npm test",
+    "lint": "npm run lint:api && npm run lint:frontend",
+    "lint:api": "cd api && npm run lint",
+    "lint:frontend": "cd ai-trainer-frontend && npm run lint",
+    "format": "npm run format:api && npm run format:frontend",
+    "format:api": "cd api && npm run format",
+    "format:frontend": "cd ai-trainer-frontend && npm run format",
+    "install:all": "npm install && cd api && npm install && cd ../ai-trainer-frontend && npm install"
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.0"
+  }
+}
+
