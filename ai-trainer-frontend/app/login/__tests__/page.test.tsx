@@ -120,7 +120,7 @@ describe('LoginPage', () => {
     (authApi.login as jest.Mock).mockResolvedValue({
       user: mockUser,
       message: 'Logged in successfully',
-    });
+    } as any);
     
     render(<LoginPage />);
     

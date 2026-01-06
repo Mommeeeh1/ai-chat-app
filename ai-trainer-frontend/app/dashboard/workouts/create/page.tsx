@@ -14,6 +14,8 @@ export default function CreateWorkoutPage() {
   const [allExercises, setAllExercises] = useState<Exercise[]>([]);
   const [filteredExercises, setFilteredExercises] = useState<Exercise[]>([]);
   const [isLoadingExercises, setIsLoadingExercises] = useState(true);
+  const [error, setError] = useState('');
+  const [isCreating, setIsCreating] = useState(false);
   
   // Form state
   const [name, setName] = useState('');

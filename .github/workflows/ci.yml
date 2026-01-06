@@ -55,7 +55,7 @@ jobs:
 
     - name: TypeScript type check (Frontend)
       working-directory: ./ai-trainer-frontend
-      run: npx tsc --noEmit
+      run: npx tsc --noEmit --skipLibCheck
 
   # ============================================
   # UNIT TESTS

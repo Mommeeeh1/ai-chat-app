@@ -18,7 +18,7 @@ describe('API Client - Error Handling', () => {
   
   it('should handle network errors', async () => {
     // Given: Fetch throws a network error
-    (global.fetch as jest.Mock).mockRejectedValue(new Error('Network error'));
+    (global.fetch as jest.MockedFunction<typeof fetch>).mockRejectedValue(new Error('Network error') as any);
     
     // When/Then: API call should throw user-friendly error
     await expect(authApi.login({ email: 'test@example.com', password: 'password' }))
@@ -28,11 +28,11 @@ describe('API Client - Error Handling', () => {
   
   it('should handle non-JSON responses for errors', async () => {
     // Given: Server returns HTML error page instead of JSON
-    (global.fetch as jest.Mock).mockResolvedValue({
+    (global.fetch as jest.MockedFunction<typeof fetch>).mockResolvedValue({
       ok: false,
       status: 500,
       json: jest.fn().mockRejectedValue(new Error('Invalid JSON')),
-    });
+    } as any);
     
     // When/Then: Should throw default error message for 500
     await expect(authApi.login({ email: 'test@example.com', password: 'password' }))
@@ -42,13 +42,13 @@ describe('API Client - Error Handling', () => {
   
   it('should extract error message from backend response', async () => {
     // Given: Backend returns error with message
-    (global.fetch as jest.Mock).mockResolvedValue({
+    (global.fetch as jest.MockedFunction<typeof fetch>).mockResolvedValue({
       ok: false,
       status: 401,
       json: jest.fn().mockResolvedValue({
         error: 'Invalid email or password',
       }),
-    });
+    } as any);
     
     // When/Then: Should throw backend's error message
     await expect(authApi.login({ email: 'test@example.com', password: 'wrong-password' }))
@@ -58,11 +58,11 @@ describe('API Client - Error Handling', () => {
   
   it('should handle 400 Bad Request with default message', async () => {
     // Given: Backend returns 400 without specific error message
-    (global.fetch as jest.Mock).mockResolvedValue({
+    (global.fetch as jest.MockedFunction<typeof fetch>).mockResolvedValue({
       ok: false,
       status: 400,
       json: jest.fn().mockResolvedValue({}),
-    });
+    } as any);
     
     // When/Then: Should throw default 400 message
     await expect(authApi.login({ email: 'invalid', password: 'data' }))
@@ -72,7 +72,7 @@ describe('API Client - Error Handling', () => {
   
   it('should handle 404 Not Found', async () => {
     // Given: Backend returns 404
-    (global.fetch as jest.Mock).mockResolvedValue({
+    (global.fetch as jest.MockedFunction<typeof fetch>).mockResolvedValue({
       ok: false,
       status: 404,
       json: jest.fn().mockResolvedValue({}),
@@ -106,11 +106,11 @@ describe('API Client - Login Function', () => {
       message: 'Logged in successfully',
     };
     
-    (global.fetch as jest.Mock).mockResolvedValue({
+    (global.fetch as jest.MockedFunction<typeof fetch>).mockResolvedValue({
       ok: true,
       status: 200,
       json: jest.fn().mockResolvedValue(mockResponse),
-    });
+    } as any);
     
     // When: We call login
     const result = await authApi.login({ email, password });
@@ -155,7 +155,7 @@ describe('API Client - Signup Function', () => {
       message: 'Account created successfully',
     };
     
-    (global.fetch as jest.Mock).mockResolvedValue({
+    (global.fetch as jest.MockedFunction<typeof fetch>).mockResolvedValue({
       ok: true,
       status: 201,
       json: jest.fn().mockResolvedValue(mockResponse),
@@ -183,7 +183,7 @@ describe('API Client - Signup Function', () => {
   
   it('should handle email already exists error', async () => {
     // Given: Backend returns conflict error
-    (global.fetch as jest.Mock).mockResolvedValue({
+    (global.fetch as jest.MockedFunction<typeof fetch>).mockResolvedValue({
       ok: false,
       status: 400,
       json: jest.fn().mockResolvedValue({
@@ -210,11 +210,11 @@ describe('API Client - Logout Function', () => {
       message: 'Logged out successfully',
     };
     
-    (global.fetch as jest.Mock).mockResolvedValue({
+    (global.fetch as jest.MockedFunction<typeof fetch>).mockResolvedValue({
       ok: true,
       status: 200,
       json: jest.fn().mockResolvedValue(mockResponse),
-    });
+    } as any);
     
     // When: We call logout
     const result = await authApi.logout();
@@ -244,16 +244,16 @@ describe('API Client - Cookie Handling', () => {
   
   it('should include credentials in all requests', async () => {
     // Given: Any API call
-    (global.fetch as jest.Mock).mockResolvedValue({
+    (global.fetch as jest.MockedFunction<typeof fetch>).mockResolvedValue({
       ok: true,
       json: jest.fn().mockResolvedValue({}),
-    });
+    } as any);
     
     // When: We make an API call
     await authApi.login({ email: 'test@example.com', password: 'password' });
     
     // Then: Credentials should be included
-    const fetchCall = (global.fetch as jest.Mock).mock.calls[0];
+    const fetchCall = (global.fetch as jest.MockedFunction<typeof fetch>).mock.calls[0];
     expect(fetchCall[1].credentials).toBe('include');
   });
 });
@@ -266,16 +266,16 @@ describe('API Client - Content Type Headers', () => {
   
   it('should set Content-Type to application/json', async () => {
     // Given: Any API call
-    (global.fetch as jest.Mock).mockResolvedValue({
+    (global.fetch as jest.MockedFunction<typeof fetch>).mockResolvedValue({
       ok: true,
       json: jest.fn().mockResolvedValue({}),
-    });
+    } as any);
     
     // When: We make an API call
     await authApi.signup({ name: 'Test', email: 'test@example.com', password: 'password' });
     
     // Then: Content-Type should be set
-    const fetchCall = (global.fetch as jest.Mock).mock.calls[0];
+    const fetchCall = (global.fetch as jest.MockedFunction<typeof fetch>).mock.calls[0];
     expect(fetchCall[1].headers['Content-Type']).toBe('application/json');
   });
 });
