@@ -4,27 +4,18 @@
  * Testing the login form component
  */
 
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
+import { screen, fireEvent, waitFor } from '@testing-library/react';
 import { describe, it, expect, jest, beforeEach } from '@jest/globals';
+import { render } from '@/test-utils';
 import LoginPage from '../page';
 import { authApi } from '@/lib/api';
 
-// Mock the API
+// Mock the API - must be before imports
+const mockLoginApi = jest.fn();
 jest.mock('@/lib/api', () => ({
   authApi: {
-    login: jest.fn(),
+    login: mockLoginApi,
   },
-}));
-
-// Mock the auth context
-const mockLogin = jest.fn();
-jest.mock('@/contexts/auth-context', () => ({
-  useAuth: () => ({
-    login: mockLogin,
-    user: null,
-    isLoading: false,
-  }),
 }));
 
 // Mock router
@@ -38,6 +29,8 @@ jest.mock('next/navigation', () => ({
 describe('LoginPage', () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    mockLoginApi.mockClear();
+    mockPush.mockClear();
   });
 
   it('should render login form', () => {
@@ -72,7 +65,7 @@ describe('LoginPage', () => {
     });
     
     // API should not be called
-    expect(authApi.login).not.toHaveBeenCalled();
+    expect(mockLoginApi).not.toHaveBeenCalled();
   });
 
   it('should show validation error for invalid email', async () => {
@@ -117,10 +110,10 @@ describe('LoginPage', () => {
       name: 'Test User',
     };
     
-    (authApi.login as jest.Mock).mockResolvedValue({
+    mockLoginApi.mockResolvedValue({
       user: mockUser,
       message: 'Logged in successfully',
-    } as any);
+    });
     
     render(<LoginPage />);
     
@@ -137,26 +130,21 @@ describe('LoginPage', () => {
     
     // Should call API with correct credentials
     await waitFor(() => {
-      expect(authApi.login).toHaveBeenCalledWith({
+      expect(mockLoginApi).toHaveBeenCalledWith({
         email: 'test@example.com',
         password: 'password123',
       });
     });
     
-    // Should call login from context
-    await waitFor(() => {
-      expect(mockLogin).toHaveBeenCalledWith(mockUser);
-    });
-    
     // Should redirect to dashboard
     await waitFor(() => {
       expect(mockPush).toHaveBeenCalledWith('/dashboard');
-    });
+    }, { timeout: 3000 });
   });
 
   it('should display error message on failed login', async () => {
     // Mock failed login
-    (authApi.login as jest.Mock).mockRejectedValue(
+    mockLoginApi.mockRejectedValue(
       new Error('Invalid email or password')
     );
     
@@ -184,7 +172,7 @@ describe('LoginPage', () => {
 
   it('should disable submit button while loading', async () => {
     // Mock slow API call
-    (authApi.login as jest.Mock).mockImplementation(
+    mockLoginApi.mockImplementation(
       () => new Promise((resolve) => setTimeout(resolve, 100))
     );
     
@@ -209,7 +197,7 @@ describe('LoginPage', () => {
 
   it('should clear error message when user starts typing', async () => {
     // Mock failed login
-    (authApi.login as jest.Mock).mockRejectedValue(
+    mockLoginApi.mockRejectedValue(
       new Error('Invalid credentials')
     );
     

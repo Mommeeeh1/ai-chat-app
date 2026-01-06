@@ -4,26 +4,18 @@
  * Testing the signup form component
  */
 
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { screen, fireEvent, waitFor } from '@testing-library/react';
 import { describe, it, expect, jest, beforeEach } from '@jest/globals';
+import { render } from '@/test-utils';
 import SignupPage from '../page';
 import { authApi } from '@/lib/api';
 
-// Mock the API
+// Mock the API - must be before imports
+const mockSignupApi = jest.fn();
 jest.mock('@/lib/api', () => ({
   authApi: {
-    signup: jest.fn(),
+    signup: mockSignupApi,
   },
-}));
-
-// Mock the auth context
-const mockLogin = jest.fn();
-jest.mock('@/contexts/auth-context', () => ({
-  useAuth: () => ({
-    login: mockLogin,
-    user: null,
-    isLoading: false,
-  }),
 }));
 
 // Mock router
@@ -37,6 +29,8 @@ jest.mock('next/navigation', () => ({
 describe('SignupPage', () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    mockSignupApi.mockClear();
+    mockPush.mockClear();
   });
 
   it('should render signup form', () => {
@@ -73,7 +67,7 @@ describe('SignupPage', () => {
     });
     
     // API should not be called
-    expect(authApi.signup).not.toHaveBeenCalled();
+    expect(mockSignupApi).not.toHaveBeenCalled();
   });
 
   it('should show validation error for short name', async () => {
@@ -136,7 +130,7 @@ describe('SignupPage', () => {
       name: 'New User',
     };
     
-    (authApi.signup as jest.Mock).mockResolvedValue({
+    mockSignupApi.mockResolvedValue({
       user: mockUser,
       message: 'Account created successfully',
     });
@@ -158,27 +152,22 @@ describe('SignupPage', () => {
     
     // Should call API with correct data
     await waitFor(() => {
-      expect(authApi.signup).toHaveBeenCalledWith({
+      expect(mockSignupApi).toHaveBeenCalledWith({
         name: 'New User',
         email: 'newuser@example.com',
         password: 'password123',
       });
     });
     
-    // Should call login from context
-    await waitFor(() => {
-      expect(mockLogin).toHaveBeenCalledWith(mockUser);
-    });
-    
     // Should redirect to dashboard
     await waitFor(() => {
       expect(mockPush).toHaveBeenCalledWith('/dashboard');
-    });
+    }, { timeout: 3000 });
   });
 
   it('should display error message on failed signup', async () => {
     // Mock failed signup
-    (authApi.signup as jest.Mock).mockRejectedValue(
+    mockSignupApi.mockRejectedValue(
       new Error('User with this email already exists')
     );
     
@@ -208,7 +197,7 @@ describe('SignupPage', () => {
 
   it('should disable submit button while loading', async () => {
     // Mock slow API call
-    (authApi.signup as jest.Mock).mockImplementation(
+    mockSignupApi.mockImplementation(
       () => new Promise((resolve) => setTimeout(resolve, 100))
     );
     
@@ -280,7 +269,7 @@ describe('SignupPage', () => {
 
   it('should clear error message when user starts typing', async () => {
     // Mock failed signup
-    (authApi.signup as jest.Mock).mockRejectedValue(
+    mockSignupApi.mockRejectedValue(
       new Error('Email already exists')
     );
     

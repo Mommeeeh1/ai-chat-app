@@ -4,51 +4,41 @@
  * Testing the main dashboard/chat component
  */
 
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { screen, fireEvent, waitFor } from '@testing-library/react';
 import { describe, it, expect, jest, beforeEach } from '@jest/globals';
+import { render } from '@/test-utils';
 import DashboardPage from '../page';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { chatApi, profileApi } from '@/lib/api';
 
-// Mock the APIs
+// Mock the APIs - must be before imports
+const mockGetHistory = jest.fn();
+const mockSendMessage = jest.fn();
+const mockGetProfile = jest.fn();
+
 jest.mock('@/lib/api', () => ({
   chatApi: {
-    sendMessage: jest.fn(),
-    getHistory: jest.fn(),
+    sendMessage: mockSendMessage,
+    getHistory: mockGetHistory,
   },
   profileApi: {
-    get: jest.fn(),
+    get: mockGetProfile,
   },
 }));
-
-// Create a wrapper with QueryClient for testing
-const createWrapper = () => {
-  const queryClient = new QueryClient({
-    defaultOptions: {
-      queries: {
-        retry: false,
-      },
-    },
-  });
-  
-  return ({ children }: { children: React.ReactNode }) => (
-    <QueryClientProvider client={queryClient}>
-      {children}
-    </QueryClientProvider>
-  );
-};
 
 describe('DashboardPage', () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    mockGetHistory.mockClear();
+    mockSendMessage.mockClear();
+    mockGetProfile.mockClear();
     
     // Default mock implementations
-    (chatApi.getHistory as jest.Mock).mockResolvedValue({
+    mockGetHistory.mockResolvedValue({
       messages: [],
       nextCursor: null,
     });
     
-    (profileApi.get as jest.Mock).mockResolvedValue({
+    mockGetProfile.mockResolvedValue({
       id: 'profile-1',
       age: 28,
       gender: 'male',
@@ -57,7 +47,7 @@ describe('DashboardPage', () => {
   });
 
   it('should render dashboard with chat interface', async () => {
-    render(<DashboardPage />, { wrapper: createWrapper() });
+    render(<DashboardPage />);
     
     // Should show welcome message or chat input
     await waitFor(() => {
@@ -85,12 +75,12 @@ describe('DashboardPage', () => {
       },
     ];
     
-    (chatApi.getHistory as jest.Mock).mockResolvedValue({
+    mockGetHistory.mockResolvedValue({
       messages: mockMessages,
       nextCursor: null,
     });
     
-    render(<DashboardPage />, { wrapper: createWrapper() });
+    render(<DashboardPage />);
     
     // Should display messages
     await waitFor(() => {
@@ -101,7 +91,7 @@ describe('DashboardPage', () => {
 
   it('should send message when form is submitted', async () => {
     // Mock successful message send
-    (chatApi.sendMessage as jest.Mock).mockResolvedValue({
+    mockSendMessage.mockResolvedValue({
       userMessage: {
         id: 'msg-3',
         role: 'user',
@@ -116,7 +106,7 @@ describe('DashboardPage', () => {
       },
     });
     
-    render(<DashboardPage />, { wrapper: createWrapper() });
+    render(<DashboardPage />);
     
     // Wait for initial load
     await waitFor(() => {
@@ -134,7 +124,7 @@ describe('DashboardPage', () => {
     
     // Should call API
     await waitFor(() => {
-      expect(chatApi.sendMessage).toHaveBeenCalledWith('What exercises should I do?');
+      expect(mockSendMessage).toHaveBeenCalledWith('What exercises should I do?');
     });
     
     // Input should be cleared
@@ -144,7 +134,7 @@ describe('DashboardPage', () => {
   });
 
   it('should not send empty messages', async () => {
-    render(<DashboardPage />, { wrapper: createWrapper() });
+    render(<DashboardPage />);
     
     await waitFor(() => {
       expect(screen.getByPlaceholderText(/ask your ai trainer/i)).toBeInTheDocument();
@@ -156,16 +146,16 @@ describe('DashboardPage', () => {
     fireEvent.click(sendButton);
     
     // API should not be called
-    expect(chatApi.sendMessage).not.toHaveBeenCalled();
+    expect(mockSendMessage).not.toHaveBeenCalled();
   });
 
   it('should display error message when send fails', async () => {
     // Mock failed message send
-    (chatApi.sendMessage as jest.Mock).mockRejectedValue(
+    mockSendMessage.mockRejectedValue(
       new Error('Failed to send message')
     );
     
-    render(<DashboardPage />, { wrapper: createWrapper() });
+    render(<DashboardPage />);
     
     await waitFor(() => {
       expect(screen.getByPlaceholderText(/ask your ai trainer/i)).toBeInTheDocument();
@@ -186,11 +176,11 @@ describe('DashboardPage', () => {
 
   it('should disable input while sending message', async () => {
     // Mock slow API call
-    (chatApi.sendMessage as jest.Mock).mockImplementation(
+    mockSendMessage.mockImplementation(
       () => new Promise((resolve) => setTimeout(resolve, 100))
     );
     
-    render(<DashboardPage />, { wrapper: createWrapper() });
+    render(<DashboardPage />);
     
     await waitFor(() => {
       expect(screen.getByPlaceholderText(/ask your ai trainer/i)).toBeInTheDocument();
@@ -219,23 +209,23 @@ describe('DashboardPage', () => {
       targetWeight: 70,
     };
     
-    (profileApi.get as jest.Mock).mockResolvedValue(mockProfile);
+    mockGetProfile.mockResolvedValue(mockProfile);
     
-    render(<DashboardPage />, { wrapper: createWrapper() });
+    render(<DashboardPage />);
     
     // Should call profile API
     await waitFor(() => {
-      expect(profileApi.get).toHaveBeenCalled();
+      expect(mockGetProfile).toHaveBeenCalled();
     });
   });
 
   it('should handle missing profile gracefully', async () => {
     // Mock profile not found
-    (profileApi.get as jest.Mock).mockRejectedValue(
+    mockGetProfile.mockRejectedValue(
       new Error('Profile not found')
     );
     
-    render(<DashboardPage />, { wrapper: createWrapper() });
+    render(<DashboardPage />);
     
     // Should still render chat interface
     await waitFor(() => {
@@ -244,7 +234,7 @@ describe('DashboardPage', () => {
   });
 
   it('should show loading state initially', () => {
-    render(<DashboardPage />, { wrapper: createWrapper() });
+    render(<DashboardPage />);
     
     // Should show some loading indicator (adjust based on your actual UI)
     // This might be a spinner, skeleton, or "Loading..." text
@@ -253,7 +243,7 @@ describe('DashboardPage', () => {
 
   it('should support pagination for chat history', async () => {
     // Mock paginated response
-    (chatApi.getHistory as jest.Mock).mockResolvedValue({
+    mockGetHistory.mockResolvedValue({
       messages: [
         {
           id: 'msg-1',
@@ -265,7 +255,7 @@ describe('DashboardPage', () => {
       nextCursor: 'cursor-1',
     });
     
-    render(<DashboardPage />, { wrapper: createWrapper() });
+    render(<DashboardPage />);
     
     // Should load initial messages
     await waitFor(() => {
