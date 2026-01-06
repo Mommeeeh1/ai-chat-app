@@ -51,17 +51,6 @@ jest.mock('next/navigation', () => ({
   redirect: jest.fn(),
 }))
 
-// Mock fetch globally - return successful response by default
-// This prevents AuthProvider from making real API calls
-global.fetch = jest.fn(() =>
-  Promise.resolve({
-    ok: false, // Return false so auth check doesn't set user
-    status: 401,
-    json: async () => ({ error: 'Unauthorized' }),
-    text: async () => '',
-  } as Response)
-) as jest.Mock;
-
 // Mock localStorage
 const localStorageMock = {
   getItem: jest.fn(() => null),
@@ -85,7 +74,6 @@ afterEach(() => {
   localStorageMock.setItem.mockClear();
   localStorageMock.removeItem.mockClear();
   localStorageMock.clear.mockClear();
-  (global.fetch as jest.Mock).mockClear();
 })
 
 

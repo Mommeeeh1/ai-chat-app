@@ -136,6 +136,7 @@ export default function SignupPage() {
               value={name}
               onChange={(e) => {
                 setName(e.target.value);
+                setError(''); // Clear general error when user starts correcting
                 if (errors.name) {
                   setErrors(prev => ({ ...prev, name: undefined }));
                 }
@@ -166,6 +167,7 @@ export default function SignupPage() {
               value={email}
               onChange={(e) => {
                 setEmail(e.target.value);
+                setError(''); // Clear general error when user starts correcting
                 if (errors.email) {
                   setErrors(prev => ({ ...prev, email: undefined }));
                 }
@@ -196,6 +198,7 @@ export default function SignupPage() {
               value={password}
               onChange={(e) => {
                 setPassword(e.target.value);
+                setError(''); // Clear general error when user starts correcting
                 if (errors.password) {
                   setErrors(prev => ({ ...prev, password: undefined }));
                 }
