@@ -55,7 +55,7 @@ jobs:
 
     - name: TypeScript type check (Frontend)
       working-directory: ./ai-trainer-frontend
-      run: npx tsc --project tsconfig.build.json --noEmit
+      run: npx tsc --noEmit
 
   # ============================================
   # UNIT TESTS

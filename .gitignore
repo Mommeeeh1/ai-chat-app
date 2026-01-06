@@ -16,6 +16,9 @@ dist/
 build/
 *.tsbuildinfo
 
+# Public folder (empty after cleanup)
+ai-trainer-frontend/public/.gitkeep
+
 # Testing
 coverage/
 .nyc_output/
