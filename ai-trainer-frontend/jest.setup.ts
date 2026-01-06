@@ -1,6 +1,34 @@
 // Learn more: https://github.com/testing-library/jest-dom
 import '@testing-library/jest-dom'
 
+// Create mock functions outside so they can be accessed
+const mockLogin = jest.fn();
+const mockLogout = jest.fn();
+
+// Mock auth context to prevent async calls in tests
+jest.mock('./contexts/auth-context', () => {
+  const React = require('react');
+  
+  return {
+    AuthContext: React.createContext({
+      user: null,
+      login: mockLogin,
+      logout: mockLogout,
+      isLoading: false,
+    }),
+    AuthProvider: ({ children }: { children: any }) => {
+      // Return children directly - no async calls, no state updates
+      return React.createElement(React.Fragment, null, children);
+    },
+    useAuth: () => ({
+      user: null,
+      login: mockLogin,
+      logout: mockLogout,
+      isLoading: false,
+    }),
+  };
+});
+
 // Mock Next.js router
 jest.mock('next/navigation', () => ({
   useRouter() {
@@ -24,11 +52,12 @@ jest.mock('next/navigation', () => ({
 }))
 
 // Mock fetch globally - return successful response by default
+// This prevents AuthProvider from making real API calls
 global.fetch = jest.fn(() =>
   Promise.resolve({
-    ok: true,
-    status: 200,
-    json: async () => ({}),
+    ok: false, // Return false so auth check doesn't set user
+    status: 401,
+    json: async () => ({ error: 'Unauthorized' }),
     text: async () => '',
   } as Response)
 ) as jest.Mock;
@@ -48,6 +77,8 @@ Element.prototype.scrollIntoView = jest.fn();
 // Reset all mocks after each test
 afterEach(() => {
   jest.clearAllMocks()
+  mockLogin.mockClear();
+  mockLogout.mockClear();
   localStorageMock.getItem.mockClear();
   localStorageMock.setItem.mockClear();
   localStorageMock.removeItem.mockClear();
