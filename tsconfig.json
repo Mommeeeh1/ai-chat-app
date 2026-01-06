@@ -1,0 +1,62 @@
+{
+  "compilerOptions": {
+    /* Language and Environment */
+    "target": "ES2022",                          // Compile to modern JavaScript
+    "lib": ["ES2022"],                           // Use modern JavaScript features
+    
+    /* Modules */
+    "module": "commonjs",                        // Node.js uses CommonJS (require/module.exports)
+    "rootDir": "./src",                          // Source code folder
+    "moduleResolution": "node",                  // How to resolve imports (Node.js style)
+    "baseUrl": "./",                             // Base directory for imports
+    "paths": {
+      "@/*": ["src/*"]                           // Shortcut: @/utils = src/utils
+    },
+    "resolveJsonModule": true,                   // Allow importing JSON files
+    
+    /* Emit */
+    "outDir": "./dist",                          // Compiled JavaScript goes here
+    "sourceMap": true,                           // Generate source maps for debugging
+    "removeComments": true,                      // Remove comments in production build
+    "declaration": true,                         // Generate .d.ts type definition files
+    "declarationMap": true,                      // Source maps for .d.ts files
+    
+    /* Interop Constraints */
+    "esModuleInterop": true,                     // Better compatibility with CommonJS
+    "allowSyntheticDefaultImports": true,        // Allow "import Express from 'express'"
+    "forceConsistentCasingInFileNames": true,    // Enforce correct file name casing
+    
+    /* Type Checking (STRICT MODE - Production Best Practice) */
+    "strict": true,                              // Enable ALL strict checks
+    "noImplicitAny": true,                       // Error on implicit 'any' type
+    "strictNullChecks": true,                    // null/undefined must be explicit
+    "strictFunctionTypes": true,                 // Strict function type checking
+    "strictBindCallApply": true,                 // Strict bind/call/apply
+    "strictPropertyInitialization": true,        // Class properties must be initialized
+    "noImplicitThis": true,                      // Error on implicit 'this'
+    "alwaysStrict": true,                        // Use "use strict" in all files
+    
+    /* Additional Checks */
+    "noUnusedLocals": true,                      // Error on unused variables
+    "noUnusedParameters": true,                  // Error on unused function parameters
+    "noImplicitReturns": true,                   // Error if function doesn't return in all paths
+    "noFallthroughCasesInSwitch": true,          // Error on switch fallthrough
+    "noUncheckedIndexedAccess": true,            // Add 'undefined' to index signatures
+    "noImplicitOverride": true,                  // Require 'override' keyword
+    "allowUnusedLabels": false,                  // Error on unused labels
+    "allowUnreachableCode": false,               // Error on unreachable code
+    
+    /* Completeness */
+    "skipLibCheck": true                         // Skip type checking of .d.ts files (faster)
+  },
+  "include": [
+    "src/**/*"                                   // Include all files in src/
+  ],
+  "exclude": [
+    "node_modules",                              // Don't compile dependencies
+    "dist",                                      // Don't compile output
+    "**/*.test.ts",                              // Don't compile tests
+    "**/*.spec.ts"
+  ]
+}
+
