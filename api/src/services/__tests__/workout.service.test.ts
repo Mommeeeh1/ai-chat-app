@@ -1,6 +1,6 @@
 /**
  * Workout Service Tests
- * 
+ *
  * Testing the workout service functions
  */
 
@@ -46,11 +46,10 @@ import { workoutService } from '../workout.service';
  * Testing Get Workout Templates
  */
 describe('WorkoutService - Get Workout Templates', () => {
-  
   beforeEach(() => {
     jest.clearAllMocks();
   });
-  
+
   it('should return all workout templates', async () => {
     // Given: We have workout templates in the database
     const mockWorkouts = [
@@ -91,19 +90,19 @@ describe('WorkoutService - Get Workout Templates', () => {
         ],
       },
     ];
-    
+
     (mockWorkoutFindMany as any).mockResolvedValue(mockWorkouts);
-    
+
     // When: We get workout templates
     const result = await workoutService.getWorkoutTemplates();
-    
+
     // Then: Templates should be returned with exercises
     expect(result).toHaveLength(1);
     expect(result[0]!.name).toBe('Beginner Full Body');
     expect(result[0]!.exercises).toHaveLength(1);
     expect(result[0]!.exercises[0]!.name).toBe('Push-ups');
     expect(result[0]!.exercises[0]!.sets).toBe(3);
-    
+
     // And: Prisma should have been called with correct parameters
     expect(mockWorkoutFindMany).toHaveBeenCalledWith({
       where: { isTemplate: true },
@@ -118,14 +117,14 @@ describe('WorkoutService - Get Workout Templates', () => {
       orderBy: { name: 'asc' },
     });
   });
-  
+
   it('should filter templates by difficulty', async () => {
     // Given: We have templates
     (mockWorkoutFindMany as any).mockResolvedValue([]);
-    
+
     // When: We get templates filtered by difficulty
     await workoutService.getWorkoutTemplates('intermediate');
-    
+
     // Then: Prisma should be called with difficulty filter
     expect(mockWorkoutFindMany).toHaveBeenCalledWith({
       where: { isTemplate: true, difficulty: 'intermediate' },
@@ -146,15 +145,14 @@ describe('WorkoutService - Get Workout Templates', () => {
  * Testing Get Workout By ID
  */
 describe('WorkoutService - Get Workout By ID', () => {
-  
   beforeEach(() => {
     jest.clearAllMocks();
   });
-  
+
   it('should return workout with exercises', async () => {
     // Given: We have a workout ID
     const workoutId = '550e8400-e29b-41d4-a716-446655440001';
-    
+
     // And: The workout exists
     const mockWorkout = {
       id: workoutId,
@@ -192,12 +190,12 @@ describe('WorkoutService - Get Workout By ID', () => {
         },
       ],
     };
-    
+
     (mockWorkoutFindUnique as any).mockResolvedValue(mockWorkout);
-    
+
     // When: We get the workout by ID
     const result = await workoutService.getWorkoutById(workoutId);
-    
+
     // Then: The workout should be returned with exercises
     expect(result).toBeDefined();
     expect(result.id).toBe(workoutId);
@@ -207,14 +205,14 @@ describe('WorkoutService - Get Workout By ID', () => {
     expect(result.exercises[0]!.sets).toBe(4);
     expect(result.exercises[0]!.notes).toBe('Heavy weight');
   });
-  
+
   it('should throw error when workout not found', async () => {
     // Given: We have a workout ID that doesn't exist
     const workoutId = '550e8400-e29b-41d4-a716-446655440999';
-    
+
     // And: Prisma returns null
     (mockWorkoutFindUnique as any).mockResolvedValue(null);
-    
+
     // When/Then: Getting the workout should throw error
     await expect(workoutService.getWorkoutById(workoutId)).rejects.toThrow('Workout not found');
   });
@@ -224,15 +222,14 @@ describe('WorkoutService - Get Workout By ID', () => {
  * Testing Get User Workouts
  */
 describe('WorkoutService - Get User Workouts', () => {
-  
   beforeEach(() => {
     jest.clearAllMocks();
   });
-  
-  it('should return user\'s custom workouts', async () => {
+
+  it("should return user's custom workouts", async () => {
     // Given: We have a userId
     const userId = '550e8400-e29b-41d4-a716-446655440001';
-    
+
     // And: The user has custom workouts
     const mockWorkouts = [
       {
@@ -249,16 +246,16 @@ describe('WorkoutService - Get User Workouts', () => {
         WorkoutExercise: [],
       },
     ];
-    
+
     (mockWorkoutFindMany as any).mockResolvedValue(mockWorkouts);
-    
+
     // When: We get user workouts
     const result = await workoutService.getUserWorkouts(userId);
-    
+
     // Then: Workouts should be returned
     expect(result).toHaveLength(1);
     expect(result[0]!.name).toBe('My Custom Workout');
-    
+
     // And: Prisma should be called with correct filters
     expect(mockWorkoutFindMany).toHaveBeenCalledWith({
       where: {
@@ -282,11 +279,10 @@ describe('WorkoutService - Get User Workouts', () => {
  * Testing Create Workout
  */
 describe('WorkoutService - Create Workout', () => {
-  
   beforeEach(() => {
     jest.clearAllMocks();
   });
-  
+
   it('should create workout with exercises', async () => {
     // Given: We have workout data
     const userId = '550e8400-e29b-41d4-a716-446655440001';
@@ -306,7 +302,7 @@ describe('WorkoutService - Create Workout', () => {
         },
       ],
     };
-    
+
     // And: Prisma creates the workout
     const mockCreatedWorkout = {
       id: 'new-workout-id',
@@ -320,10 +316,10 @@ describe('WorkoutService - Create Workout', () => {
       createdAt: new Date(),
       updatedAt: new Date(),
     };
-    
+
     (mockWorkoutCreate as any).mockResolvedValue(mockCreatedWorkout);
     (mockWorkoutExerciseCreate as any).mockResolvedValue({});
-    
+
     // Mock getWorkoutById
     (mockWorkoutFindUnique as any).mockResolvedValue({
       ...mockCreatedWorkout,
@@ -352,15 +348,15 @@ describe('WorkoutService - Create Workout', () => {
         },
       ],
     });
-    
+
     // When: We create the workout
     const result = await workoutService.createWorkout(userId, workoutData);
-    
+
     // Then: The workout should be created
     expect(result).toBeDefined();
     expect(result.name).toBe('New Workout');
     expect(result.exercises).toHaveLength(1);
-    
+
     // And: Prisma create should have been called
     expect(mockWorkoutCreate).toHaveBeenCalledTimes(1);
     expect(mockWorkoutExerciseCreate).toHaveBeenCalledTimes(1);
@@ -371,16 +367,15 @@ describe('WorkoutService - Create Workout', () => {
  * Testing Delete Workout
  */
 describe('WorkoutService - Delete Workout', () => {
-  
   beforeEach(() => {
     jest.clearAllMocks();
   });
-  
-  it('should delete user\'s workout', async () => {
+
+  it("should delete user's workout", async () => {
     // Given: We have a workout to delete
     const userId = '550e8400-e29b-41d4-a716-446655440001';
     const workoutId = 'workout-to-delete';
-    
+
     // And: The workout exists and belongs to user
     (mockWorkoutFindFirst as any).mockResolvedValue({
       id: workoutId,
@@ -388,30 +383,31 @@ describe('WorkoutService - Delete Workout', () => {
       createdBy: userId,
       isTemplate: false,
     });
-    
+
     (mockWorkoutDelete as any).mockResolvedValue({});
-    
+
     // When: We delete the workout
     await workoutService.deleteWorkout(userId, workoutId);
-    
+
     // Then: Prisma delete should have been called
     expect(mockWorkoutDelete).toHaveBeenCalledWith({
       where: { id: workoutId },
     });
   });
-  
+
   it('should throw error when workout not found or unauthorized', async () => {
     // Given: We have a workout ID
     const userId = '550e8400-e29b-41d4-a716-446655440001';
     const workoutId = 'non-existent-workout';
-    
+
     // And: The workout doesn't exist or doesn't belong to user
     (mockWorkoutFindFirst as any).mockResolvedValue(null);
-    
+
     // When/Then: Deleting should throw error
-    await expect(workoutService.deleteWorkout(userId, workoutId))
-      .rejects.toThrow('Workout not found or unauthorized');
-    
+    await expect(workoutService.deleteWorkout(userId, workoutId)).rejects.toThrow(
+      'Workout not found or unauthorized'
+    );
+
     // And: Delete should not have been called
     expect(mockWorkoutDelete).not.toHaveBeenCalled();
   });
@@ -421,11 +417,10 @@ describe('WorkoutService - Delete Workout', () => {
  * Testing Get Exercises
  */
 describe('WorkoutService - Get Exercises', () => {
-  
   beforeEach(() => {
     jest.clearAllMocks();
   });
-  
+
   it('should return all exercises', async () => {
     // Given: We have exercises in the database
     const mockExercises = [
@@ -441,27 +436,27 @@ describe('WorkoutService - Get Exercises', () => {
         updatedAt: new Date(),
       },
     ];
-    
+
     (mockExerciseFindMany as any).mockResolvedValue(mockExercises);
-    
+
     // When: We get exercises
     const result = await workoutService.getExercises();
-    
+
     // Then: Exercises should be returned
     expect(result).toHaveLength(1);
     expect(result[0]!.name).toBe('Push-ups');
-    
+
     // And: Prisma should be called
     expect(mockExerciseFindMany).toHaveBeenCalled();
   });
-  
+
   it('should filter exercises by muscle group and difficulty', async () => {
     // Given: We want filtered exercises
     (mockExerciseFindMany as any).mockResolvedValue([]);
-    
+
     // When: We get exercises with filters
     await workoutService.getExercises('chest', 'beginner');
-    
+
     // Then: Prisma should be called with filters
     expect(mockExerciseFindMany).toHaveBeenCalledWith({
       where: { muscleGroup: 'chest', difficulty: 'beginner' },
@@ -474,11 +469,10 @@ describe('WorkoutService - Get Exercises', () => {
  * Testing Log Workout
  */
 describe('WorkoutService - Log Workout', () => {
-  
   beforeEach(() => {
     jest.clearAllMocks();
   });
-  
+
   it('should log a completed workout', async () => {
     // Given: We have workout log data
     const userId = '550e8400-e29b-41d4-a716-446655440001';
@@ -489,7 +483,7 @@ describe('WorkoutService - Log Workout', () => {
       exercises: [{ name: 'Squats', sets: 3, reps: 10 }],
       notes: 'Felt great!',
     };
-    
+
     // And: Prisma creates the log
     const mockLog = {
       id: 'log-1',
@@ -503,17 +497,17 @@ describe('WorkoutService - Log Workout', () => {
       completed: true,
       createdAt: new Date(),
     };
-    
+
     (mockWorkoutLogCreate as any).mockResolvedValue(mockLog);
-    
+
     // When: We log the workout
     const result = await workoutService.logWorkout(userId, logData);
-    
+
     // Then: The log should be created
     expect(result).toBeDefined();
     expect(result.name).toBe('Morning Workout');
     expect(result.completed).toBe(true);
-    
+
     // And: Prisma create should have been called
     expect(mockWorkoutLogCreate).toHaveBeenCalledTimes(1);
   });
@@ -523,15 +517,14 @@ describe('WorkoutService - Log Workout', () => {
  * Testing Get Workout History
  */
 describe('WorkoutService - Get Workout History', () => {
-  
   beforeEach(() => {
     jest.clearAllMocks();
   });
-  
+
   it('should return workout history for user', async () => {
     // Given: We have a userId
     const userId = '550e8400-e29b-41d4-a716-446655440001';
-    
+
     // And: The user has workout logs
     const mockLogs = [
       {
@@ -552,17 +545,17 @@ describe('WorkoutService - Get Workout History', () => {
         },
       },
     ];
-    
+
     (mockWorkoutLogFindMany as any).mockResolvedValue(mockLogs);
-    
+
     // When: We get workout history
     const result = await workoutService.getWorkoutHistory(userId);
-    
+
     // Then: History should be returned with parsed exercises
     expect(result).toHaveLength(1);
     expect(result[0]!.name).toBe('Morning Workout');
     expect(result[0]!.exercises).toEqual([{ name: 'Squats', sets: 3 }]);
-    
+
     // And: Prisma should be called
     expect(mockWorkoutLogFindMany).toHaveBeenCalled();
   });
@@ -572,20 +565,19 @@ describe('WorkoutService - Get Workout History', () => {
  * Testing Get Workout Stats
  */
 describe('WorkoutService - Get Workout Stats', () => {
-  
   beforeEach(() => {
     jest.clearAllMocks();
   });
-  
+
   it('should calculate workout statistics', async () => {
     // Given: We have a userId with workout logs
     const userId = '550e8400-e29b-41d4-a716-446655440001';
-    
+
     const now = new Date();
     const currentWeekStart = new Date(now);
     currentWeekStart.setDate(now.getDate() - now.getDay());
     currentWeekStart.setHours(0, 0, 0, 0);
-    
+
     const mockLogs = [
       {
         id: 'log-1',
@@ -598,12 +590,12 @@ describe('WorkoutService - Get Workout Stats', () => {
         duration: 60,
       },
     ];
-    
+
     (mockWorkoutLogFindMany as any).mockResolvedValue(mockLogs);
-    
+
     // When: We get workout stats
     const result = await workoutService.getWorkoutStats(userId);
-    
+
     // Then: Stats should be calculated
     expect(result.totalWorkouts).toBe(2);
     expect(result.totalMinutes).toBe(105);
@@ -611,5 +603,3 @@ describe('WorkoutService - Get Workout Stats', () => {
     expect(result.currentWeekWorkouts).toBe(2);
   });
 });
-
-
