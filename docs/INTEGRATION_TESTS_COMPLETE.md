@@ -130,7 +130,7 @@ api/
 ### Mocked Services
 - **Redis**: All cache operations mocked
 - **Ollama**: AI responses mocked with consistent test data
-- **OpenAI**: API calls mocked
+- **Ollama**: AI responses mocked
 - **External APIs**: No real external calls
 
 ### Database Strategy

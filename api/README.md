@@ -9,7 +9,7 @@ Production-ready AI chat application backend built with Node.js, TypeScript, Exp
 - ✅ Socket.io for real-time chat
 - ✅ PostgreSQL + Prisma ORM
 - ✅ JWT Authentication
-- ✅ OpenAI Integration
+- ✅ Ollama AI Integration
 - ✅ Input validation (Zod)
 - ✅ Security middleware (Helmet, CORS)
 - ✅ Structured logging (Winston)

@@ -229,10 +229,7 @@ jobs:
         POSTGRES_PASSWORD=test_password_123
         POSTGRES_DB=aitrainer_test
         JWT_SECRET=test_jwt_secret_for_ci_minimum_32_characters_long_12345
-        OPENAI_API_KEY=sk-test-key-for-ci-testing-only
         CORS_ORIGIN=http://localhost:3001
-        OPENAI_MODEL=gpt-3.5-turbo
-        OPENAI_MAX_TOKENS=500
         RATE_LIMIT_WINDOW_MS=900000
         RATE_LIMIT_MAX_REQUESTS=100
         REDIS_URL=redis://redis:6379

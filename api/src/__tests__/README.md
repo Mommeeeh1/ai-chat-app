@@ -84,7 +84,7 @@ npm run test:all
 ### Environment Setup
 - **Database**: Uses test database (separate from development)
 - **Redis**: Mocked for consistent test results
-- **AI Services**: Mocked (Ollama/OpenAI) to avoid external dependencies
+- **AI Services**: Mocked (Ollama) to avoid external dependencies
 - **Authentication**: Real JWT tokens generated per test
 
 ### Test Database

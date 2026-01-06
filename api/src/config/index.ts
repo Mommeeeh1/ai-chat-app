@@ -24,14 +24,6 @@ const envSchema = z.object({
   // CORS
   CORS_ORIGIN: z.string().url().default('http://localhost:3001'),
 
-  // OpenAI
-  OPENAI_API_KEY: z
-    .string()
-    .startsWith('sk-', 'OPENAI_API_KEY must start with sk-')
-    .default('sk-test-key'),
-  OPENAI_MODEL: z.string().default('gpt-3.5-turbo'),
-  OPENAI_MAX_TOKENS: z.string().regex(/^\d+$/).transform(Number).default('500'),
-
   // Rate Limiting
   RATE_LIMIT_WINDOW_MS: z.string().regex(/^\d+$/).transform(Number).default('900000'),
   RATE_LIMIT_MAX_REQUESTS: z.string().regex(/^\d+$/).transform(Number).default('100'),
@@ -89,13 +81,6 @@ export const config = {
   // CORS settings
   cors: {
     origin: env.CORS_ORIGIN,
-  },
-
-  // OpenAI settings
-  openai: {
-    apiKey: env.OPENAI_API_KEY,
-    model: env.OPENAI_MODEL,
-    maxTokens: env.OPENAI_MAX_TOKENS,
   },
 
   // Rate limiting settings

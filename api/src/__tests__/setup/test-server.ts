@@ -1,7 +1,6 @@
-import express, { Express } from 'express';
 import request from 'supertest';
 import { PrismaClient } from '@prisma/client';
-import app from '../../app';
+import { createApp } from '../../app';
 
 export const prisma = new PrismaClient({
   datasources: {
@@ -11,7 +10,7 @@ export const prisma = new PrismaClient({
   },
 });
 
-export const testApp: Express = app;
+export const testApp = createApp();
 
 export const createTestUser = async (email: string = 'test@example.com') => {
   // Clean up existing user
@@ -39,9 +38,9 @@ export const cleanDatabase = async () => {
   // Delete in correct order to respect foreign key constraints
   await prisma.chatMessage.deleteMany();
   await prisma.workoutLog.deleteMany();
-  await prisma.progressEntry.deleteMany();
+  await prisma.progress.deleteMany();
   await prisma.workout.deleteMany();
-  await prisma.profile.deleteMany();
+  await prisma.userProfile.deleteMany();
   await prisma.user.deleteMany();
 };
 
@@ -70,10 +69,5 @@ jest.mock('../../lib/ollama', () => ({
       content: 'This is a mock AI response for testing purposes.',
     },
   }),
-}));
-
-// Mock OpenAI for tests
-jest.mock('../../lib/openai', () => ({
-  generateOpenAIResponse: jest.fn().mockResolvedValue('This is a mock OpenAI response for testing purposes.'),
 }));
 

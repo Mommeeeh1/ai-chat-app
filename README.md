@@ -4,7 +4,7 @@ A full-stack AI-powered personal fitness trainer application that provides perso
 
 ## ✨ Features
 
-- 🤖 **AI-Powered Chat**: Interactive fitness advice using Ollama (llama3.1) or OpenAI
+- 🤖 **AI-Powered Chat**: Interactive fitness advice using Ollama (llama3.1)
 - 💪 **Workout Management**: Pre-built templates and custom workout creation
 - 📊 **Progress Tracking**: Monitor weight, measurements, and workout history
 - 👤 **User Profiles**: Personalized fitness profiles with goals and preferences
@@ -19,7 +19,7 @@ A full-stack AI-powered personal fitness trainer application that provides perso
 - **Docker** & Docker Compose
 - **PostgreSQL** 14+
 - **Redis** 7+
-- **Ollama** (for local AI) or OpenAI API key
+- **Ollama** (for local AI)
 
 ### Option 1: Using Make (Recommended)
 
@@ -86,7 +86,7 @@ See [PROJECT_STRUCTURE.md](PROJECT_STRUCTURE.md) for detailed structure.
 - **Framework**: Express.js
 - **Database**: PostgreSQL + Prisma ORM
 - **Cache**: Redis
-- **AI**: Ollama (llama3.1) / OpenAI
+- **AI**: Ollama (llama3.1)
 - **Auth**: JWT with httpOnly cookies
 - **Testing**: Jest (52/52 tests passing)
 
@@ -208,7 +208,7 @@ docker-compose -f config/docker-compose.yml logs -f
 GitHub Actions workflow (`.github/workflows/ci.yml`):
 1. ✅ Lint & Type Check
 2. ✅ Backend Tests
-3. ⚠️ Frontend Tests (in progress)
+3. ⚠️ Frontend Tests 
 4. ✅ Docker Build
 5. 🔒 Security Scan
 6. 📦 Build Verification
@@ -319,11 +319,3 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 - [Next.js](https://nextjs.org/) - React framework
 - [Prisma](https://www.prisma.io/) - Database ORM
 - [TailwindCSS](https://tailwindcss.com/) - Utility-first CSS
-
----
-
-**Built with ❤️ for fitness enthusiasts**
-
-For detailed documentation, see the [docs](docs/) folder.
-
-Last Updated: January 2026

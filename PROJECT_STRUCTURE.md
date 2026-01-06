@@ -41,7 +41,6 @@ api/
 │   │   └── user.dto.ts
 │   ├── lib/                      # External service integrations
 │   │   ├── ollama.ts            # AI service (Ollama)
-│   │   ├── openai.ts            # AI service (OpenAI)
 │   │   ├── prisma.ts            # Database client
 │   │   └── redis.ts             # Cache client
 │   ├── middleware/               # Express middleware
