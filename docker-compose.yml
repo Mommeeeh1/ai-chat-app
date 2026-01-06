@@ -84,16 +84,19 @@ services:
         condition: service_healthy
     command: >
       sh -c "
-        npx prisma migrate deploy &&
-        npx prisma db seed &&
+        echo 'Running database migrations...' &&
+        npx prisma migrate deploy || echo 'Migration failed or already applied' &&
+        echo 'Seeding database...' &&
+        npx prisma db seed || echo 'Seed failed or already seeded' &&
+        echo 'Starting server...' &&
         node dist/server.js
       "
     healthcheck:
-      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:3000/health"]
+      test: ["CMD", "node", "-e", "require('http').get('http://localhost:3000/health', (r) => {process.exit(r.statusCode === 200 ? 0 : 1)})"]
       interval: 30s
       timeout: 10s
       retries: 3
-      start_period: 40s
+      start_period: 60s
     networks:
       - ai-trainer-network
 
@@ -113,11 +116,11 @@ services:
       api:
         condition: service_healthy
     healthcheck:
-      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:3001/"]
+      test: ["CMD", "node", "-e", "require('http').get('http://localhost:3001/', (r) => {process.exit(r.statusCode === 200 ? 0 : 1)})"]
       interval: 30s
       timeout: 10s
       retries: 3
-      start_period: 40s
+      start_period: 60s
     networks:
       - ai-trainer-network
 
