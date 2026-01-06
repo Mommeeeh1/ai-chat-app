@@ -237,6 +237,3 @@ export function isAppError(error: any): error is AppError {
 export function isOperationalError(error: any): boolean {
   return isAppError(error) && error.isOperational;
 }
-
-
-

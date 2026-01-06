@@ -119,6 +119,7 @@ export default function LoginPage() {
               value={email}
               onChange={(e) => {
                 setEmail(e.target.value);
+                setError(''); // Clear general error when user starts correcting
                 // Clear error when user starts typing
                 if (errors.email) {
                   setErrors(prev => ({ ...prev, email: undefined }));
@@ -151,6 +152,7 @@ export default function LoginPage() {
               value={password}
               onChange={(e) => {
                 setPassword(e.target.value);
+                setError(''); // Clear general error when user starts correcting
                 // Clear error when user starts typing
                 if (errors.password) {
                   setErrors(prev => ({ ...prev, password: undefined }));
