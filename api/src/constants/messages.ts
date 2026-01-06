@@ -1,6 +1,6 @@
 /**
  * Application Messages
- * 
+ *
  * Centralized messages for consistency and easy i18n in the future
  */
 
@@ -74,7 +74,3 @@ export const SUCCESS_MESSAGES = {
   DATA_SAVED: 'Data saved successfully',
   DATA_DELETED: 'Data deleted successfully',
 } as const;
-
-
-
-

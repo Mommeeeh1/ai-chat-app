@@ -2,15 +2,15 @@ import { z } from 'zod';
 
 /**
  * User Response DTOs
- * 
+ *
  * DTOs (Data Transfer Objects) define the shape of data sent to clients.
- * 
+ *
  * Why use DTOs?
  * 1. Security: Explicitly define what data is exposed (prevents password leaks)
  * 2. Type Safety: TypeScript knows the exact response structure
  * 3. Consistency: All endpoints return the same user structure
  * 4. Decoupling: API responses independent of database schema
- * 
+ *
  * Pattern:
  * Database Model → DTO → API Response
  * (has password)   (no password)   (safe)
@@ -18,7 +18,7 @@ import { z } from 'zod';
 
 /**
  * User Response DTO Schema
- * 
+ *
  * This is what clients receive - NO sensitive data like password
  */
 export const userResponseSchema = z.object({
@@ -36,7 +36,7 @@ export type UserResponseDTO = z.infer<typeof userResponseSchema>;
 
 /**
  * Auth Response DTO Schema
- * 
+ *
  * Used for signup/login responses
  * Contains user data + JWT token
  */
@@ -53,13 +53,13 @@ export type AuthResponseDTO = z.infer<typeof authResponseSchema>;
 
 /**
  * Transform Function: Database Model → DTO
- * 
+ *
  * This is the KEY function that ensures security!
  * It takes a database user (with password) and returns only safe fields.
- * 
+ *
  * @param user - User from database (includes password!)
  * @returns UserResponseDTO - Safe user object (NO password)
- * 
+ *
  * Usage:
  * ```typescript
  * const dbUser = await prisma.user.findUnique(...);
@@ -73,7 +73,7 @@ export function toUserDTO(user: {
   name: string | null;
   createdAt: Date;
   password?: string; // password might exist in DB model
-  updatedAt?: Date;  // other fields we don't want to expose
+  updatedAt?: Date; // other fields we don't want to expose
   [key: string]: any; // any other fields
 }): UserResponseDTO {
   // Explicitly select only the fields we want to expose
@@ -89,9 +89,9 @@ export function toUserDTO(user: {
 
 /**
  * Transform Function: Create Auth Response
- * 
+ *
  * Combines user DTO with JWT token and message
- * 
+ *
  * @param user - User from database
  * @param token - JWT token
  * @param message - Success message
@@ -108,5 +108,3 @@ export function toAuthResponseDTO(
     token,
   };
 }
-
-

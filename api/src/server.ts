@@ -4,7 +4,7 @@ import { logger } from './utils/logger';
 
 /**
  * Server Entry Point
- * 
+ *
  * This is where the application starts
  * Loads config, creates Express app, and starts listening
  */
@@ -21,7 +21,7 @@ function startServer(): void {
     app.listen(config.server.port, config.server.host, () => {
       logger.info(`✅ Server running on http://${config.server.host}:${config.server.port}`);
       logger.info(`📊 Health check: http://${config.server.host}:${config.server.port}/health`);
-      
+
       if (config.server.isDevelopment) {
         logger.info('🔧 Development mode: Hot reload enabled');
       }

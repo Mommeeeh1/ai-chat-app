@@ -17,18 +17,18 @@ export interface AuthenticatedRequest extends Request {
 
 /**
  * Authentication Middleware
- * 
+ *
  * What it does:
  * 1. Extracts JWT token from httpOnly cookie OR Authorization header (fallback)
  * 2. Verifies the token is valid (not expired, correct signature)
  * 3. Extracts userId from token payload
  * 4. Adds user info to request object
  * 5. Calls next() to continue to the route handler
- * 
+ *
  * If token is missing or invalid:
  * - Returns 401 Unauthorized
  * - Does NOT call next() (stops request)
- * 
+ *
  * Usage:
  * ```typescript
  * router.get('/protected', authenticate, (req, res) => {
@@ -37,20 +37,16 @@ export interface AuthenticatedRequest extends Request {
  * });
  * ```
  */
-export function authenticate(
-  req: AuthenticatedRequest,
-  res: Response,
-  next: NextFunction
-): void {
+export function authenticate(req: AuthenticatedRequest, res: Response, next: NextFunction): void {
   try {
     // Step 1: Get token from httpOnly cookie (preferred) or Authorization header (fallback)
     let token: string | undefined;
-    
+
     // Try to get token from httpOnly cookie first
     if (req.cookies && req.cookies.token) {
       token = req.cookies.token;
       authLogger.debug('Token found in httpOnly cookie');
-    } 
+    }
     // Fallback to Authorization header for backwards compatibility
     else if (req.headers.authorization) {
       const authHeader = req.headers.authorization;
@@ -76,7 +72,9 @@ export function authenticate(
     // - Token is expired
     // - Token signature is invalid
     // - Token is malformed
-    const decoded = jwt.verify(token, config.security.jwtSecret) as jwt.JwtPayload & { userId: string };
+    const decoded = jwt.verify(token, config.security.jwtSecret) as jwt.JwtPayload & {
+      userId: string;
+    };
 
     // Step 4: Add user info to request object
     // Now any route handler can access req.user.userId
@@ -116,4 +114,3 @@ export function authenticate(
     });
   }
 }
-

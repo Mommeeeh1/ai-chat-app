@@ -111,5 +111,3 @@ export const config = {
 
 // Export type for TypeScript
 export type Config = typeof config;
-
-

@@ -67,21 +67,24 @@ router.use(authenticate);
  *             schema:
  *               $ref: '#/components/schemas/Error'
  */
-router.post('/', asyncHandler(async (req: AuthenticatedRequest, res) => {
-  const userId = req.user!.userId;
-  const { weight, measurements, notes, mood, photoUrl, date } = req.body;
+router.post(
+  '/',
+  asyncHandler(async (req: AuthenticatedRequest, res) => {
+    const userId = req.user!.userId;
+    const { weight, measurements, notes, mood, photoUrl, date } = req.body;
 
-  const progress = await progressService.createProgress(userId, {
-    weight,
-    measurements,
-    notes,
-    mood,
-    photoUrl,
-    date: date ? new Date(date) : undefined,
-  });
+    const progress = await progressService.createProgress(userId, {
+      weight,
+      measurements,
+      notes,
+      mood,
+      photoUrl,
+      date: date ? new Date(date) : undefined,
+    });
 
-  res.status(201).json(progress);
-}));
+    res.status(201).json(progress);
+  })
+);
 
 /**
  * @swagger
@@ -116,13 +119,16 @@ router.post('/', asyncHandler(async (req: AuthenticatedRequest, res) => {
  *             schema:
  *               $ref: '#/components/schemas/Error'
  */
-router.get('/', asyncHandler(async (req: AuthenticatedRequest, res) => {
-  const userId = req.user!.userId;
-  const limit = req.query.limit ? parseInt(req.query.limit as string) : undefined;
+router.get(
+  '/',
+  asyncHandler(async (req: AuthenticatedRequest, res) => {
+    const userId = req.user!.userId;
+    const limit = req.query.limit ? parseInt(req.query.limit as string) : undefined;
 
-  const progress = await progressService.getUserProgress(userId, limit);
-  res.json(progress);
-}));
+    const progress = await progressService.getUserProgress(userId, limit);
+    res.json(progress);
+  })
+);
 
 /**
  * @swagger
@@ -148,11 +154,14 @@ router.get('/', asyncHandler(async (req: AuthenticatedRequest, res) => {
  *             schema:
  *               $ref: '#/components/schemas/Error'
  */
-router.get('/stats', asyncHandler(async (req: AuthenticatedRequest, res) => {
-  const userId = req.user!.userId;
-  const stats = await progressService.getProgressStats(userId);
-  res.json(stats);
-}));
+router.get(
+  '/stats',
+  asyncHandler(async (req: AuthenticatedRequest, res) => {
+    const userId = req.user!.userId;
+    const stats = await progressService.getProgressStats(userId);
+    res.json(stats);
+  })
+);
 
 /**
  * @swagger
@@ -201,22 +210,25 @@ router.get('/stats', asyncHandler(async (req: AuthenticatedRequest, res) => {
  *             schema:
  *               $ref: '#/components/schemas/Error'
  */
-router.get('/range', asyncHandler(async (req: AuthenticatedRequest, res) => {
-  const userId = req.user!.userId;
-  const { startDate, endDate } = req.query;
+router.get(
+  '/range',
+  asyncHandler(async (req: AuthenticatedRequest, res) => {
+    const userId = req.user!.userId;
+    const { startDate, endDate } = req.query;
 
-  if (!startDate || !endDate) {
-    res.status(400).json({ message: 'startDate and endDate are required' });
-    return;
-  }
+    if (!startDate || !endDate) {
+      res.status(400).json({ message: 'startDate and endDate are required' });
+      return;
+    }
 
-  const progress = await progressService.getProgressByDateRange(
-    userId,
-    new Date(startDate as string),
-    new Date(endDate as string)
-  );
-  res.json(progress);
-}));
+    const progress = await progressService.getProgressByDateRange(
+      userId,
+      new Date(startDate as string),
+      new Date(endDate as string)
+    );
+    res.json(progress);
+  })
+);
 
 /**
  * @swagger
@@ -287,21 +299,24 @@ router.get('/range', asyncHandler(async (req: AuthenticatedRequest, res) => {
  *             schema:
  *               $ref: '#/components/schemas/Error'
  */
-router.put('/:id', asyncHandler(async (req: AuthenticatedRequest, res) => {
-  const userId = req.user!.userId;
-  const { id } = req.params;
-  const { weight, measurements, notes, mood, photoUrl } = req.body;
+router.put(
+  '/:id',
+  asyncHandler(async (req: AuthenticatedRequest, res) => {
+    const userId = req.user!.userId;
+    const { id } = req.params;
+    const { weight, measurements, notes, mood, photoUrl } = req.body;
 
-  const progress = await progressService.updateProgress(userId, id as string, {
-    weight,
-    measurements,
-    notes,
-    mood,
-    photoUrl,
-  });
+    const progress = await progressService.updateProgress(userId, id as string, {
+      weight,
+      measurements,
+      notes,
+      mood,
+      photoUrl,
+    });
 
-  res.json(progress);
-}));
+    res.json(progress);
+  })
+);
 
 /**
  * @swagger
@@ -345,12 +360,15 @@ router.put('/:id', asyncHandler(async (req: AuthenticatedRequest, res) => {
  *             schema:
  *               $ref: '#/components/schemas/Error'
  */
-router.delete('/:id', asyncHandler(async (req: AuthenticatedRequest, res) => {
-  const userId = req.user!.userId;
-  const { id } = req.params;
+router.delete(
+  '/:id',
+  asyncHandler(async (req: AuthenticatedRequest, res) => {
+    const userId = req.user!.userId;
+    const { id } = req.params;
 
-  await progressService.deleteProgress(userId, id as string);
-  res.json({ message: 'Progress entry deleted successfully' });
-}));
+    await progressService.deleteProgress(userId, id as string);
+    res.json({ message: 'Progress entry deleted successfully' });
+  })
+);
 
 export default router;

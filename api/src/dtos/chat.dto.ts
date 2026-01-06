@@ -2,7 +2,7 @@ import { z } from 'zod';
 
 /**
  * Chat DTOs
- * 
+ *
  * Data Transfer Objects for AI chat operations
  */
 
@@ -22,7 +22,10 @@ interface ChatMessage {
  * Zod Schema for sending a chat message
  */
 export const sendMessageSchema = z.object({
-  message: z.string().min(1, 'Message cannot be empty').max(1000, 'Message too long (max 1000 characters)'),
+  message: z
+    .string()
+    .min(1, 'Message cannot be empty')
+    .max(1000, 'Message too long (max 1000 characters)'),
 });
 
 /**
@@ -73,5 +76,3 @@ export function toChatMessageDTO(message: ChatMessage): ChatMessageResponseDTO {
     createdAt: message.createdAt,
   });
 }
-
-

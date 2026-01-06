@@ -284,8 +284,11 @@ export const workoutService = {
 
     const firstLog = logs.length > 0 ? logs[logs.length - 1] : null;
     const firstLogDate = firstLog ? firstLog.date : now;
-    const weeksSinceStart = Math.max(1, Math.ceil((now.getTime() - firstLogDate.getTime()) / (7 * 24 * 60 * 60 * 1000)));
-    
+    const weeksSinceStart = Math.max(
+      1,
+      Math.ceil((now.getTime() - firstLogDate.getTime()) / (7 * 24 * 60 * 60 * 1000))
+    );
+
     return {
       totalWorkouts,
       totalMinutes,
@@ -293,11 +296,7 @@ export const workoutService = {
       currentWeekWorkouts,
       lastWeekWorkouts,
       averagePerWeek:
-        totalWorkouts > 0
-          ? Math.round((totalWorkouts / weeksSinceStart) * 10) / 10
-          : 0,
+        totalWorkouts > 0 ? Math.round((totalWorkouts / weeksSinceStart) * 10) / 10 : 0,
     };
   },
 };
-
-

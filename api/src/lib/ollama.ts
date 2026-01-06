@@ -2,7 +2,7 @@ import { logger } from '../utils/logger';
 
 /**
  * Ollama Client for Local AI
- * 
+ *
  * Free, local AI models - no API costs!
  * Uses Llama 3.2 running on your machine
  */
@@ -26,7 +26,7 @@ interface OllamaResponse {
 
 /**
  * Send a chat request to Ollama
- * 
+ *
  * @param messages - Conversation history
  * @returns AI response
  */
@@ -50,12 +50,12 @@ export async function chatWithOllama(messages: OllamaMessage[]): Promise<string>
       throw new Error(`Ollama request failed: ${response.status} ${response.statusText}`);
     }
 
-    const data = await response.json() as OllamaResponse;
+    const data = (await response.json()) as OllamaResponse;
     const reply = data.message.content;
 
-    logger.debug('Ollama response received', { 
+    logger.debug('Ollama response received', {
       replyLength: reply.length,
-      model: data.model 
+      model: data.model,
     });
 
     return reply;
@@ -73,13 +73,13 @@ export async function testOllamaConnection(): Promise<boolean> {
     logger.info('Testing Ollama connection...');
 
     const response = await fetch(`${OLLAMA_URL}/api/tags`);
-    
+
     if (!response.ok) {
       logger.error('Ollama is not responding');
       return false;
     }
 
-    const data = await response.json() as { models: any[] };
+    const data = (await response.json()) as { models: any[] };
     const models = data.models || [];
 
     if (models.length === 0) {
@@ -89,14 +89,14 @@ export async function testOllamaConnection(): Promise<boolean> {
 
     logger.info(`✅ Ollama connection successful`);
     logger.info(`Available models: ${models.map((m: any) => m.name).join(', ')}`);
-    
+
     // Test actual chat
     const testReply = await chatWithOllama([
-      { role: 'user', content: 'Say "OK" if you can read this.' }
+      { role: 'user', content: 'Say "OK" if you can read this.' },
     ]);
-    
+
     logger.info(`✅ Test chat successful: ${testReply.substring(0, 50)}...`);
-    
+
     return true;
   } catch (error) {
     logger.error('❌ Ollama connection test failed:', error);
@@ -106,7 +106,7 @@ export async function testOllamaConnection(): Promise<boolean> {
 
 /**
  * Build system prompt for fitness trainer
- * 
+ *
  * @param userProfile - User's profile data
  * @returns System message
  */
@@ -123,27 +123,29 @@ export function buildSystemPrompt(userProfile?: {
   workoutDaysPerWeek?: number;
 }): OllamaMessage {
   let prompt = `You are an expert personal fitness trainer and nutritionist. Your role is to provide personalized, actionable fitness and nutrition advice. `;
-  
+
   if (userProfile) {
     prompt += `\n\n=== CLIENT PROFILE ===\n`;
     prompt += `You are working with a specific client. ALWAYS reference their profile when giving advice:\n\n`;
-    
+
     const profileParts: string[] = [];
-    
+
     if (userProfile.name) profileParts.push(`Name: ${userProfile.name}`);
     if (userProfile.age) profileParts.push(`Age: ${userProfile.age} years old`);
     if (userProfile.gender) profileParts.push(`Gender: ${userProfile.gender}`);
-    
+
     if (userProfile.currentWeight && userProfile.targetWeight) {
       const weightDiff = userProfile.targetWeight - userProfile.currentWeight;
       const direction = weightDiff > 0 ? 'gain' : 'lose';
-      profileParts.push(`Weight: ${userProfile.currentWeight}kg → ${userProfile.targetWeight}kg (${direction} ${Math.abs(weightDiff)}kg)`);
+      profileParts.push(
+        `Weight: ${userProfile.currentWeight}kg → ${userProfile.targetWeight}kg (${direction} ${Math.abs(weightDiff)}kg)`
+      );
     } else if (userProfile.currentWeight) {
       profileParts.push(`Current weight: ${userProfile.currentWeight}kg`);
     } else if (userProfile.targetWeight) {
       profileParts.push(`Target weight: ${userProfile.targetWeight}kg`);
     }
-    
+
     if (userProfile.primaryGoal) {
       const goalMap: Record<string, string> = {
         lose_weight: 'Lose weight and burn fat',
@@ -152,9 +154,11 @@ export function buildSystemPrompt(userProfile?: {
         improve_endurance: 'Improve cardiovascular endurance',
         general_fitness: 'General fitness and health',
       };
-      profileParts.push(`Primary Goal: ${goalMap[userProfile.primaryGoal] || userProfile.primaryGoal}`);
+      profileParts.push(
+        `Primary Goal: ${goalMap[userProfile.primaryGoal] || userProfile.primaryGoal}`
+      );
     }
-    
+
     if (userProfile.activityLevel) {
       const levelMap: Record<string, string> = {
         sedentary: 'Sedentary (little/no exercise)',
@@ -163,28 +167,32 @@ export function buildSystemPrompt(userProfile?: {
         very_active: 'Very active (6-7 days/week)',
         extremely_active: 'Extremely active (athlete level)',
       };
-      profileParts.push(`Activity Level: ${levelMap[userProfile.activityLevel] || userProfile.activityLevel}`);
+      profileParts.push(
+        `Activity Level: ${levelMap[userProfile.activityLevel] || userProfile.activityLevel}`
+      );
     }
-    
+
     if (userProfile.workoutDaysPerWeek) {
       profileParts.push(`Workout Schedule: ${userProfile.workoutDaysPerWeek} days per week`);
     }
-    
+
     if (userProfile.dietaryRestrictions && userProfile.dietaryRestrictions.length > 0) {
-      profileParts.push(`Dietary Restrictions: ${userProfile.dietaryRestrictions.map(r => r.replace('_', ' ')).join(', ')}`);
+      profileParts.push(
+        `Dietary Restrictions: ${userProfile.dietaryRestrictions.map((r) => r.replace('_', ' ')).join(', ')}`
+      );
     }
-    
+
     if (userProfile.availableEquipment && userProfile.availableEquipment.length > 0) {
-      const equipment = userProfile.availableEquipment.map(e => e.replace('_', ' '));
+      const equipment = userProfile.availableEquipment.map((e) => e.replace('_', ' '));
       if (equipment.includes('none')) {
         profileParts.push(`Equipment: Bodyweight only (no equipment)`);
       } else {
         profileParts.push(`Available Equipment: ${equipment.join(', ')}`);
+      }
     }
-    }
-    
+
     prompt += profileParts.join('\n');
-    
+
     prompt += `\n\n=== INSTRUCTIONS ===\n`;
     prompt += `1. ALWAYS consider their profile when answering\n`;
     prompt += `2. For nutrition: Respect dietary restrictions and align with their weight goal\n`;
@@ -195,7 +203,7 @@ export function buildSystemPrompt(userProfile?: {
   } else {
     prompt += `\n\nNote: No client profile available. Provide general fitness advice, but mention that personalized recommendations would be more effective if they complete their profile.`;
   }
-  
+
   prompt += `\n\n=== RESPONSE GUIDELINES ===\n`;
   prompt += `- Be encouraging, professional, and practical\n`;
   prompt += `- Keep responses concise (under 300 words)\n`;
@@ -206,7 +214,6 @@ export function buildSystemPrompt(userProfile?: {
 
   return {
     role: 'system',
-    content: prompt
+    content: prompt,
   };
 }
-

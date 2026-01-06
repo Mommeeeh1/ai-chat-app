@@ -1,6 +1,6 @@
 /**
  * Application-wide Enumerations
- * 
+ *
  * Centralized enums for type safety and consistency
  * Use these instead of magic strings throughout the app
  */
@@ -135,30 +135,30 @@ export enum ErrorCode {
   TOKEN_EXPIRED = 'TOKEN_EXPIRED',
   TOKEN_INVALID = 'TOKEN_INVALID',
   UNAUTHORIZED = 'UNAUTHORIZED',
-  
+
   // User
   USER_NOT_FOUND = 'USER_NOT_FOUND',
   USER_ALREADY_EXISTS = 'USER_ALREADY_EXISTS',
-  
+
   // Profile
   PROFILE_NOT_FOUND = 'PROFILE_NOT_FOUND',
-  
+
   // Workout
   WORKOUT_NOT_FOUND = 'WORKOUT_NOT_FOUND',
   EXERCISE_NOT_FOUND = 'EXERCISE_NOT_FOUND',
-  
+
   // Progress
   PROGRESS_NOT_FOUND = 'PROGRESS_NOT_FOUND',
-  
+
   // Validation
   VALIDATION_ERROR = 'VALIDATION_ERROR',
-  
+
   // Rate Limiting
   RATE_LIMIT_EXCEEDED = 'RATE_LIMIT_EXCEEDED',
-  
+
   // AI
   AI_SERVICE_UNAVAILABLE = 'AI_SERVICE_UNAVAILABLE',
-  
+
   // General
   INTERNAL_ERROR = 'INTERNAL_ERROR',
   BAD_REQUEST = 'BAD_REQUEST',
@@ -181,7 +181,3 @@ export enum Environment {
   PRODUCTION = 'production',
   TEST = 'test',
 }
-
-
-
-

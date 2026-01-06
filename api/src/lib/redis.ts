@@ -4,13 +4,13 @@ import { logger } from '../utils/logger';
 
 /**
  * Redis Client Singleton
- * 
+ *
  * Why Redis?
  * - Fast in-memory data store
  * - Persistent across server restarts
  * - Works with multiple servers (load balancing)
  * - Industry standard for rate limiting, caching, sessions
- * 
+ *
  * Use Cases:
  * 1. Rate limiting (current use)
  * 2. Session storage (future)
@@ -22,17 +22,17 @@ let redisClient: Redis | null = null;
 
 /**
  * Get or create Redis client
- * 
+ *
  * Lazy initialization - only connects when first accessed
  * Singleton pattern - reuses same connection
- * 
+ *
  * Graceful fallback: If Redis is unavailable, logs warning but doesn't crash
  */
 export function getRedisClient(): Redis {
   if (!redisClient) {
     logger.info('Initializing Redis client...');
     logger.info(`Redis URL: ${config.redis.url}`);
-    
+
     try {
       redisClient = new Redis(config.redis.url, {
         // Retry strategy: exponential backoff
@@ -46,16 +46,16 @@ export function getRedisClient(): Redis {
           logger.warn(`Redis connection attempt ${times}, retrying in ${delay}ms`);
           return delay;
         },
-        
+
         // Max retry attempts
         maxRetriesPerRequest: 3,
-        
+
         // Enable offline queue (queue commands when disconnected)
         enableOfflineQueue: false, // Fail fast if Redis is down
-        
+
         // Connection timeout
         connectTimeout: 5000, // 5 seconds
-        
+
         // Lazy connect (don't connect immediately)
         lazyConnect: true, // Changed to true - won't connect until first command
       });
@@ -102,7 +102,7 @@ export function getRedisClient(): Redis {
 
 /**
  * Close Redis connection
- * 
+ *
  * Call this during graceful shutdown
  */
 export async function closeRedis(): Promise<void> {
@@ -123,7 +123,7 @@ export function isRedisConnected(): boolean {
 
 /**
  * Graceful Shutdown Handler
- * 
+ *
  * Ensures Redis connection is closed properly
  */
 process.on('SIGTERM', async () => {
@@ -136,4 +136,3 @@ process.on('SIGINT', async () => {
   await closeRedis();
   process.exit(0);
 });
-

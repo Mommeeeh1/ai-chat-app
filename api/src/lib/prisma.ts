@@ -2,7 +2,7 @@ import { PrismaClient } from '@prisma/client';
 
 /**
  * Prisma Client Singleton
- * 
+ *
  * Why a singleton?
  * - In development, hot reload creates new instances
  * - We want ONE connection pool, not multiple
@@ -23,15 +23,13 @@ declare global {
 function getPrismaClient(): PrismaClient {
   if (!global.prisma) {
     console.log('Initializing Prisma Client...');
-    
+
     // Prisma 7: datasource URL comes from prisma.config.ts via DATABASE_URL env var
     // Just create the client without extra config
     global.prisma = new PrismaClient({
-      log: process.env.NODE_ENV === 'development'
-        ? ['query', 'error', 'warn']
-        : ['error'],
+      log: process.env.NODE_ENV === 'development' ? ['query', 'error', 'warn'] : ['error'],
     });
-    
+
     console.log('✅ Prisma Client initialized');
   }
   return global.prisma;
@@ -50,6 +48,5 @@ export const prisma = new Proxy({} as PrismaClient, {
       _prisma = getPrismaClient();
     }
     return (_prisma as any)[prop];
-  }
+  },
 });
-

@@ -1,6 +1,6 @@
 /**
  * Constants Index
- * 
+ *
  * Central export point for all constants
  */
 
@@ -24,10 +24,10 @@ export const RATE_LIMITS = {
   SIGNUP_PER_HOUR: 3,
   LOGIN_PER_5_MIN: 20, // Development
   LOGIN_PER_5_MIN_PROD: 5, // Production
-  
+
   // Chat
   CHAT_PER_HOUR: 10,
-  
+
   // General API
   API_PER_15_MIN: 100,
 } as const;
@@ -99,7 +99,3 @@ export const CACHE_TTL = {
   TEMPLATES: 3600, // 1 hour
   STATS: 60, // 1 minute
 } as const;
-
-
-
-

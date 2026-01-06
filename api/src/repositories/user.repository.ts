@@ -5,14 +5,14 @@ const repoLogger = createChildLogger({ module: 'repository', service: 'UserRepos
 
 /**
  * User Repository
- * 
+ *
  * Handles all database operations for User model
  * This separates data access from business logic
  */
 
 /**
  * Find a user by email
- * 
+ *
  * @param email - User's email address
  * @returns User or null if not found
  */
@@ -25,7 +25,7 @@ export async function findUserByEmail(email: string) {
 
 /**
  * Find a user by ID
- * 
+ *
  * @param id - User's ID
  * @returns User or null if not found
  */
@@ -38,15 +38,11 @@ export async function findUserById(id: string) {
 
 /**
  * Create a new user
- * 
+ *
  * @param data - User data (email, password, optional name)
  * @returns Created user
  */
-export async function createUser(data: {
-  email: string;
-  password: string;
-  name?: string | null;
-}) {
+export async function createUser(data: { email: string; password: string; name?: string | null }) {
   repoLogger.debug(`Creating user with email: ${data.email}`);
   return prisma.user.create({
     data: {
@@ -59,7 +55,7 @@ export async function createUser(data: {
 
 /**
  * Update a user
- * 
+ *
  * @param id - User's ID
  * @param data - Data to update
  * @returns Updated user
@@ -81,7 +77,7 @@ export async function updateUser(
 
 /**
  * Delete a user
- * 
+ *
  * @param id - User's ID
  * @returns Deleted user
  */
@@ -91,4 +87,3 @@ export async function deleteUser(id: string) {
     where: { id },
   });
 }
-

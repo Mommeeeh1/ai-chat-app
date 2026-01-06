@@ -19,12 +19,12 @@ function getLogger() {
 
 /**
  * AI Chat Rate Limiter
- * 
+ *
  * Stricter than general API limit because AI is resource-intensive
- * 
+ *
  * Limits:
  * - 10 messages per hour per user
- * 
+ *
  * Why?
  * - AI responses take time (5-10 seconds)
  * - Prevents abuse
@@ -38,7 +38,9 @@ const chatRateLimiter = rateLimit({
       error: 'Too many chat messages',
       message: CHAT_MESSAGES.RATE_LIMIT,
       errorCode: ErrorCode.RATE_LIMIT_EXCEEDED,
-      retryAfter: Math.ceil((req.rateLimit?.resetTime?.getTime() || Date.now() - Date.now()) / 1000),
+      retryAfter: Math.ceil(
+        (req.rateLimit?.resetTime?.getTime() || Date.now() - Date.now()) / 1000
+      ),
     });
   },
   standardHeaders: true,
@@ -74,10 +76,14 @@ router.get(
     const limit = Math.min(parseInt(req.query.limit as string) || 20, 50); // Max 50
     const cursor = req.query.cursor as string | undefined;
 
-    getLogger().debug(`Fetching history for user: ${userId} (limit: ${limit}, cursor: ${cursor || 'none'})`);
+    getLogger().debug(
+      `Fetching history for user: ${userId} (limit: ${limit}, cursor: ${cursor || 'none'})`
+    );
     const result = await chatService.getChatHistory(userId, limit, cursor);
 
-    getLogger().info(`Chat history sent to user: ${userId} (count: ${result.messages.length}, hasMore: ${!!result.nextCursor})`);
+    getLogger().info(
+      `Chat history sent to user: ${userId} (count: ${result.messages.length}, hasMore: ${!!result.nextCursor})`
+    );
     res.status(HttpStatus.OK).json(result);
   })
 );
@@ -102,4 +108,3 @@ router.delete(
 );
 
 export default router;
-

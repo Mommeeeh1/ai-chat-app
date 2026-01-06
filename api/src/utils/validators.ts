@@ -1,6 +1,6 @@
 /**
  * Validation Utilities
- * 
+ *
  * Helper functions for common validation tasks
  */
 
@@ -23,7 +23,9 @@ export function validateEmail(email: string): void {
     throw new ValidationError('Please provide a valid email address');
   }
   if (email.length > VALIDATION_RULES.EMAIL_MAX_LENGTH) {
-    throw new ValidationError(`Email must be less than ${VALIDATION_RULES.EMAIL_MAX_LENGTH} characters`);
+    throw new ValidationError(
+      `Email must be less than ${VALIDATION_RULES.EMAIL_MAX_LENGTH} characters`
+    );
   }
 }
 
@@ -39,7 +41,9 @@ export function validatePassword(password: string): void {
     throw new ValidationError('Password is required');
   }
   if (!isValidPassword(password)) {
-    throw new ValidationError(`Password must be at least ${VALIDATION_RULES.PASSWORD_MIN_LENGTH} characters`);
+    throw new ValidationError(
+      `Password must be at least ${VALIDATION_RULES.PASSWORD_MIN_LENGTH} characters`
+    );
   }
 }
 
@@ -51,10 +55,14 @@ export function validateName(name: string): void {
     throw new ValidationError('Name is required');
   }
   if (name.length < VALIDATION_RULES.NAME_MIN_LENGTH) {
-    throw new ValidationError(`Name must be at least ${VALIDATION_RULES.NAME_MIN_LENGTH} characters`);
+    throw new ValidationError(
+      `Name must be at least ${VALIDATION_RULES.NAME_MIN_LENGTH} characters`
+    );
   }
   if (name.length > VALIDATION_RULES.NAME_MAX_LENGTH) {
-    throw new ValidationError(`Name must be less than ${VALIDATION_RULES.NAME_MAX_LENGTH} characters`);
+    throw new ValidationError(
+      `Name must be less than ${VALIDATION_RULES.NAME_MAX_LENGTH} characters`
+    );
   }
 }
 
@@ -87,7 +95,12 @@ export function validatePositiveNumber(value: any, fieldName: string): void {
   }
 }
 
-export function validateNumberRange(value: number, min: number, max: number, fieldName: string): void {
+export function validateNumberRange(
+  value: number,
+  min: number,
+  max: number,
+  fieldName: string
+): void {
   validatePositiveNumber(value, fieldName);
   if (value < min || value > max) {
     throw new ValidationError(`${fieldName} must be between ${min} and ${max}`);
@@ -114,7 +127,7 @@ export function validateDate(date: any, fieldName: string = 'Date'): void {
 export function validateDateRange(startDate: Date, endDate: Date): void {
   validateDate(startDate, 'Start date');
   validateDate(endDate, 'End date');
-  
+
   if (startDate > endDate) {
     throw new ValidationError('Start date must be before end date');
   }
@@ -150,9 +163,7 @@ export function validateEnum<T extends Record<string, string>>(
 ): void {
   const validValues = Object.values(enumObject);
   if (!validValues.includes(value)) {
-    throw new ValidationError(
-      `Invalid ${fieldName}. Must be one of: ${validValues.join(', ')}`
-    );
+    throw new ValidationError(`Invalid ${fieldName}. Must be one of: ${validValues.join(', ')}`);
   }
 }
 
@@ -183,12 +194,12 @@ export function sanitizeEmail(email: string): string {
  * Object Validation
  */
 export function validateRequiredFields(obj: Record<string, any>, requiredFields: string[]): void {
-  const missingFields = requiredFields.filter(field => !obj[field]);
-  
+  const missingFields = requiredFields.filter((field) => !obj[field]);
+
   if (missingFields.length > 0) {
     throw new ValidationError(
       `Missing required fields: ${missingFields.join(', ')}`,
-      missingFields.map(field => ({ field, message: 'This field is required' }))
+      missingFields.map((field) => ({ field, message: 'This field is required' }))
     );
   }
 }
@@ -196,13 +207,12 @@ export function validateRequiredFields(obj: Record<string, any>, requiredFields:
 /**
  * Pagination Validation
  */
-export function validatePagination(limit?: number, offset?: number): { limit: number; offset: number } {
+export function validatePagination(
+  limit?: number,
+  offset?: number
+): { limit: number; offset: number } {
   const validatedLimit = limit && !isNaN(limit) && limit > 0 ? Math.min(limit, 100) : 20;
   const validatedOffset = offset && !isNaN(offset) && offset >= 0 ? offset : 0;
-  
+
   return { limit: validatedLimit, offset: validatedOffset };
 }
-
-
-
-

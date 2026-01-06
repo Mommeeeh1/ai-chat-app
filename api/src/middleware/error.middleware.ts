@@ -8,7 +8,7 @@ export { AppError } from '../utils/errors';
 
 /**
  * Global Error Handler Middleware
- * 
+ *
  * What it does:
  * 1. Catches ALL errors thrown in routes/middleware
  * 2. Logs the error for debugging
@@ -16,18 +16,18 @@ export { AppError } from '../utils/errors';
  * 4. Returns user-friendly error message
  * 5. In development: includes stack trace
  * 6. In production: hides sensitive error details
- * 
+ *
  * Why it's important:
  * - Prevents server crashes from unhandled errors
  * - Provides consistent error response format
  * - Logs errors for monitoring/debugging
  * - Hides sensitive info in production
- * 
+ *
  * Usage:
  * ```typescript
  * // In app.ts, add at the END of all middleware:
  * app.use(errorHandler);
- * 
+ *
  * // In any route, you can throw errors:
  * router.get('/user/:id', (req, res, next) => {
  *   const user = findUser(req.params.id);
@@ -78,9 +78,9 @@ export function errorHandler(
 
 /**
  * Async Error Wrapper
- * 
+ *
  * Wraps async route handlers to catch errors automatically
- * 
+ *
  * Without this, you'd need try/catch in every async route:
  * ```typescript
  * router.get('/user', async (req, res, next) => {
@@ -92,7 +92,7 @@ export function errorHandler(
  *   }
  * });
  * ```
- * 
+ *
  * With this wrapper:
  * ```typescript
  * router.get('/user', asyncHandler(async (req, res) => {
@@ -109,4 +109,3 @@ export function asyncHandler(
     Promise.resolve(fn(req, res, next)).catch(next);
   };
 }
-

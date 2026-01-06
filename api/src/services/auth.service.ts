@@ -11,7 +11,7 @@ const authLogger = createChildLogger({ module: 'auth', service: 'AuthService' })
 
 /**
  * Auth Service
- * 
+ *
  * Handles user authentication:
  * - Signup (create new user)
  * - Login (verify credentials)
@@ -32,7 +32,7 @@ interface LoginData {
 
 /**
  * Hash a password using bcrypt
- * 
+ *
  * @param password - Plain text password
  * @returns Hashed password
  */
@@ -43,7 +43,7 @@ export async function hashPassword(password: string): Promise<string> {
 
 /**
  * Compare a password with a hash
- * 
+ *
  * @param password - Plain text password
  * @param hash - Hashed password from database
  * @returns True if passwords match
@@ -54,23 +54,19 @@ export async function comparePassword(password: string, hash: string): Promise<b
 
 /**
  * Generate a JWT token for a user
- * 
+ *
  * @param userId - User's ID
  * @returns JWT token
  */
 function generateToken(userId: string): string {
-  return jwt.sign(
-    { userId },
-    config.security.jwtSecret,
-    {
-      expiresIn: config.security.jwtExpiresIn,
-    } as jwt.SignOptions
-  );
+  return jwt.sign({ userId }, config.security.jwtSecret, {
+    expiresIn: config.security.jwtExpiresIn,
+  } as jwt.SignOptions);
 }
 
 /**
  * Sign up a new user
- * 
+ *
  * @param data - User signup data (email, password, optional name)
  * @returns AuthResponseDTO - Safe user object (no password) and JWT token
  */
@@ -108,7 +104,7 @@ export async function signup(data: SignupData): Promise<AuthResponseDTO> {
 
 /**
  * Log in an existing user
- * 
+ *
  * @param data - Login credentials (email, password)
  * @returns AuthResponseDTO - Safe user object (no password) and JWT token
  */
@@ -140,4 +136,3 @@ export async function login(data: LoginData): Promise<AuthResponseDTO> {
   // Return DTO (automatically excludes password and other sensitive data)
   return toAuthResponseDTO(user, token, AUTH_MESSAGES.LOGIN_SUCCESS);
 }
-

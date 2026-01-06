@@ -8,7 +8,7 @@ const profileLogger = createChildLogger({ module: 'profile', service: 'ProfileSe
 
 /**
  * Profile Service
- * 
+ *
  * Business logic for user profile operations
  * - Get user profile
  * - Create/update profile
@@ -17,7 +17,7 @@ const profileLogger = createChildLogger({ module: 'profile', service: 'ProfileSe
 
 /**
  * Get a user's profile
- * 
+ *
  * @param userId - User's ID
  * @returns ProfileResponseDTO
  * @throws AppError if profile not found
@@ -38,9 +38,9 @@ export async function getProfile(userId: string): Promise<ProfileResponseDTO> {
 
 /**
  * Create or update a user's profile
- * 
+ *
  * Uses upsert - creates if doesn't exist, updates if exists
- * 
+ *
  * @param userId - User's ID
  * @param data - Profile data to create/update
  * @returns ProfileResponseDTO
@@ -107,7 +107,7 @@ export async function upsertProfile(
 
 /**
  * Delete a user's profile
- * 
+ *
  * @param userId - User's ID
  */
 export async function deleteProfile(userId: string): Promise<void> {
@@ -127,7 +127,7 @@ export async function deleteProfile(userId: string): Promise<void> {
 
 /**
  * Check if a user has a profile
- * 
+ *
  * @param userId - User's ID
  * @returns boolean
  */
@@ -136,5 +136,3 @@ export async function hasProfile(userId: string): Promise<boolean> {
   const profile = await profileRepository.findProfileByUserId(userId);
   return profile !== null;
 }
-
-

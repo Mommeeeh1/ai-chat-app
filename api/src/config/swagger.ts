@@ -3,7 +3,7 @@ import { config } from './index';
 
 /**
  * Swagger/OpenAPI Configuration
- * 
+ *
  * Auto-generates API documentation from JSDoc comments
  * Access at: http://localhost:3000/api-docs
  */
@@ -75,7 +75,7 @@ const options: swaggerJsdoc.Options = {
             message: { type: 'string' },
           },
         },
-        
+
         // Profile
         Profile: {
           type: 'object',
@@ -87,15 +87,21 @@ const options: swaggerJsdoc.Options = {
             height: { type: 'number', nullable: true, description: 'Height in cm' },
             currentWeight: { type: 'number', nullable: true, description: 'Weight in kg' },
             targetWeight: { type: 'number', nullable: true, description: 'Weight in kg' },
-            primaryGoal: { 
-              type: 'string', 
+            primaryGoal: {
+              type: 'string',
               enum: ['weight_loss', 'muscle_gain', 'maintenance', 'endurance', 'flexibility'],
-              nullable: true 
+              nullable: true,
             },
-            activityLevel: { 
-              type: 'string', 
-              enum: ['sedentary', 'lightly_active', 'moderately_active', 'very_active', 'extra_active'],
-              nullable: true 
+            activityLevel: {
+              type: 'string',
+              enum: [
+                'sedentary',
+                'lightly_active',
+                'moderately_active',
+                'very_active',
+                'extra_active',
+              ],
+              nullable: true,
             },
             dietaryRestrictions: { type: 'array', items: { type: 'string' } },
             availableEquipment: { type: 'array', items: { type: 'string' } },
@@ -104,7 +110,7 @@ const options: swaggerJsdoc.Options = {
             updatedAt: { type: 'string', format: 'date-time' },
           },
         },
-        
+
         // Chat
         ChatMessage: {
           type: 'object',
@@ -123,7 +129,7 @@ const options: swaggerJsdoc.Options = {
             conversationLength: { type: 'number' },
           },
         },
-        
+
         // Progress
         ProgressEntry: {
           type: 'object',
@@ -132,7 +138,11 @@ const options: swaggerJsdoc.Options = {
             userId: { type: 'string', format: 'uuid' },
             date: { type: 'string', format: 'date-time' },
             weight: { type: 'number', nullable: true },
-            mood: { type: 'string', enum: ['great', 'good', 'okay', 'tired', 'sore'], nullable: true },
+            mood: {
+              type: 'string',
+              enum: ['great', 'good', 'okay', 'tired', 'sore'],
+              nullable: true,
+            },
             notes: { type: 'string', nullable: true },
           },
         },
@@ -145,7 +155,7 @@ const options: swaggerJsdoc.Options = {
             weightChange: { type: 'number', nullable: true },
           },
         },
-        
+
         // Workouts
         Exercise: {
           type: 'object',
@@ -175,7 +185,7 @@ const options: swaggerJsdoc.Options = {
             equipment: { type: 'array', items: { type: 'string' } },
           },
         },
-        
+
         // Error
         Error: {
           type: 'object',
@@ -200,4 +210,3 @@ const options: swaggerJsdoc.Options = {
 };
 
 export const swaggerSpec = swaggerJsdoc(options);
-

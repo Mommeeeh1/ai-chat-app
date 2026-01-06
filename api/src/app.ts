@@ -15,7 +15,7 @@ import { errorHandler, apiLimiter } from './middleware';
 
 /**
  * Create and configure Express application
- * 
+ *
  * This function sets up all middleware and routes
  * Returns the configured Express app
  */
@@ -88,10 +88,14 @@ export function createApp(): Express {
 
   // Swagger UI: Interactive API documentation
   // Access at: http://localhost:3000/api-docs
-  app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec, {
-    customCss: '.swagger-ui .topbar { display: none }',
-    customSiteTitle: 'AI Trainer API Docs',
-  }));
+  app.use(
+    '/api-docs',
+    swaggerUi.serve,
+    swaggerUi.setup(swaggerSpec, {
+      customCss: '.swagger-ui .topbar { display: none }',
+      customSiteTitle: 'AI Trainer API Docs',
+    })
+  );
 
   // Swagger JSON: Raw OpenAPI specification
   // Access at: http://localhost:3000/api-docs.json
@@ -150,4 +154,3 @@ export function createApp(): Express {
 
   return app;
 }
-

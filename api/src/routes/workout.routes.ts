@@ -40,11 +40,14 @@ router.use(authenticate);
  *             schema:
  *               $ref: '#/components/schemas/Error'
  */
-router.get('/templates', asyncHandler(async (req: AuthenticatedRequest, res) => {
-  const difficulty = req.query.difficulty as string | undefined;
-  const templates = await workoutService.getWorkoutTemplates(difficulty);
-  res.json(templates);
-}));
+router.get(
+  '/templates',
+  asyncHandler(async (req: AuthenticatedRequest, res) => {
+    const difficulty = req.query.difficulty as string | undefined;
+    const templates = await workoutService.getWorkoutTemplates(difficulty);
+    res.json(templates);
+  })
+);
 
 /**
  * @swagger
@@ -72,11 +75,14 @@ router.get('/templates', asyncHandler(async (req: AuthenticatedRequest, res) => 
  *             schema:
  *               $ref: '#/components/schemas/Error'
  */
-router.get('/my', asyncHandler(async (req: AuthenticatedRequest, res) => {
-  const userId = req.user!.userId;
-  const workouts = await workoutService.getUserWorkouts(userId);
-  res.json(workouts);
-}));
+router.get(
+  '/my',
+  asyncHandler(async (req: AuthenticatedRequest, res) => {
+    const userId = req.user!.userId;
+    const workouts = await workoutService.getUserWorkouts(userId);
+    res.json(workouts);
+  })
+);
 
 /**
  * @swagger
@@ -116,12 +122,15 @@ router.get('/my', asyncHandler(async (req: AuthenticatedRequest, res) => {
  *             schema:
  *               $ref: '#/components/schemas/Error'
  */
-router.get('/exercises', asyncHandler(async (req: AuthenticatedRequest, res) => {
-  const muscleGroup = req.query.muscleGroup as string | undefined;
-  const difficulty = req.query.difficulty as string | undefined;
-  const exercises = await workoutService.getExercises(muscleGroup, difficulty);
-  res.json(exercises);
-}));
+router.get(
+  '/exercises',
+  asyncHandler(async (req: AuthenticatedRequest, res) => {
+    const muscleGroup = req.query.muscleGroup as string | undefined;
+    const difficulty = req.query.difficulty as string | undefined;
+    const exercises = await workoutService.getExercises(muscleGroup, difficulty);
+    res.json(exercises);
+  })
+);
 
 /**
  * @swagger
@@ -161,11 +170,14 @@ router.get('/exercises', asyncHandler(async (req: AuthenticatedRequest, res) => 
  *             schema:
  *               $ref: '#/components/schemas/Error'
  */
-router.get('/:id', asyncHandler(async (req: AuthenticatedRequest, res) => {
-  const { id } = req.params;
-  const workout = await workoutService.getWorkoutById(id as string);
-  res.json(workout);
-}));
+router.get(
+  '/:id',
+  asyncHandler(async (req: AuthenticatedRequest, res) => {
+    const { id } = req.params;
+    const workout = await workoutService.getWorkoutById(id as string);
+    res.json(workout);
+  })
+);
 
 /**
  * @swagger
@@ -240,26 +252,29 @@ router.get('/:id', asyncHandler(async (req: AuthenticatedRequest, res) => {
  *             schema:
  *               $ref: '#/components/schemas/Error'
  */
-router.post('/', asyncHandler(async (req: AuthenticatedRequest, res) => {
-  const userId = req.user!.userId;
-  const { name, description, difficulty, duration, equipment, exercises } = req.body;
+router.post(
+  '/',
+  asyncHandler(async (req: AuthenticatedRequest, res) => {
+    const userId = req.user!.userId;
+    const { name, description, difficulty, duration, equipment, exercises } = req.body;
 
-  if (!name || !difficulty) {
-    res.status(400).json({ message: 'Name and difficulty are required' });
-    return;
-  }
+    if (!name || !difficulty) {
+      res.status(400).json({ message: 'Name and difficulty are required' });
+      return;
+    }
 
-  const workout = await workoutService.createWorkout(userId, {
-    name,
-    description,
-    difficulty,
-    duration,
-    equipment: equipment || [],
-    exercises: exercises || [],
-  });
+    const workout = await workoutService.createWorkout(userId, {
+      name,
+      description,
+      difficulty,
+      duration,
+      equipment: equipment || [],
+      exercises: exercises || [],
+    });
 
-  res.status(201).json(workout);
-}));
+    res.status(201).json(workout);
+  })
+);
 
 /**
  * @swagger
@@ -309,13 +324,16 @@ router.post('/', asyncHandler(async (req: AuthenticatedRequest, res) => {
  *             schema:
  *               $ref: '#/components/schemas/Error'
  */
-router.delete('/:id', asyncHandler(async (req: AuthenticatedRequest, res) => {
-  const userId = req.user!.userId;
-  const { id } = req.params;
+router.delete(
+  '/:id',
+  asyncHandler(async (req: AuthenticatedRequest, res) => {
+    const userId = req.user!.userId;
+    const { id } = req.params;
 
-  await workoutService.deleteWorkout(userId, id as string);
-  res.json({ message: 'Workout deleted successfully' });
-}));
+    await workoutService.deleteWorkout(userId, id as string);
+    res.json({ message: 'Workout deleted successfully' });
+  })
+);
 
 /**
  * @swagger
@@ -404,26 +422,29 @@ router.delete('/:id', asyncHandler(async (req: AuthenticatedRequest, res) => {
  *             schema:
  *               $ref: '#/components/schemas/Error'
  */
-router.post('/log', asyncHandler(async (req: AuthenticatedRequest, res) => {
-  const userId = req.user!.userId;
-  const { workoutId, name, date, duration, exercises, notes } = req.body;
+router.post(
+  '/log',
+  asyncHandler(async (req: AuthenticatedRequest, res) => {
+    const userId = req.user!.userId;
+    const { workoutId, name, date, duration, exercises, notes } = req.body;
 
-  if (!name) {
-    res.status(400).json({ message: 'Workout name is required' });
-    return;
-  }
+    if (!name) {
+      res.status(400).json({ message: 'Workout name is required' });
+      return;
+    }
 
-  const log = await workoutService.logWorkout(userId, {
-    workoutId,
-    name,
-    date: date ? new Date(date) : undefined,
-    duration,
-    exercises: exercises || [],
-    notes,
-  });
+    const log = await workoutService.logWorkout(userId, {
+      workoutId,
+      name,
+      date: date ? new Date(date) : undefined,
+      duration,
+      exercises: exercises || [],
+      notes,
+    });
 
-  res.status(201).json(log);
-}));
+    res.status(201).json(log);
+  })
+);
 
 /**
  * @swagger
@@ -471,13 +492,16 @@ router.post('/log', asyncHandler(async (req: AuthenticatedRequest, res) => {
  *             schema:
  *               $ref: '#/components/schemas/Error'
  */
-router.get('/history/all', asyncHandler(async (req: AuthenticatedRequest, res) => {
-  const userId = req.user!.userId;
-  const limit = req.query.limit ? parseInt(req.query.limit as string) : undefined;
+router.get(
+  '/history/all',
+  asyncHandler(async (req: AuthenticatedRequest, res) => {
+    const userId = req.user!.userId;
+    const limit = req.query.limit ? parseInt(req.query.limit as string) : undefined;
 
-  const history = await workoutService.getWorkoutHistory(userId, limit);
-  res.json(history);
-}));
+    const history = await workoutService.getWorkoutHistory(userId, limit);
+    res.json(history);
+  })
+);
 
 /**
  * @swagger
@@ -520,10 +544,13 @@ router.get('/history/all', asyncHandler(async (req: AuthenticatedRequest, res) =
  *             schema:
  *               $ref: '#/components/schemas/Error'
  */
-router.get('/stats/summary', asyncHandler(async (req: AuthenticatedRequest, res) => {
-  const userId = req.user!.userId;
-  const stats = await workoutService.getWorkoutStats(userId);
-  res.json(stats);
-}));
+router.get(
+  '/stats/summary',
+  asyncHandler(async (req: AuthenticatedRequest, res) => {
+    const userId = req.user!.userId;
+    const stats = await workoutService.getWorkoutStats(userId);
+    res.json(stats);
+  })
+);
 
 export default router;

@@ -1,6 +1,6 @@
 /**
  * Custom Error Classes
- * 
+ *
  * Structured error handling with proper error codes and messages
  */
 
@@ -8,7 +8,7 @@ import { HttpStatus, ErrorCode } from '../constants';
 
 /**
  * Base Application Error
- * 
+ *
  * All custom errors should extend this class
  */
 export class AppError extends Error {
@@ -24,15 +24,15 @@ export class AppError extends Error {
     isOperational: boolean = true
   ) {
     super(message);
-    
+
     this.statusCode = statusCode;
     this.errorCode = errorCode;
     this.isOperational = isOperational;
     this.timestamp = new Date().toISOString();
-    
+
     // Maintains proper stack trace for where error was thrown
     Error.captureStackTrace(this, this.constructor);
-    
+
     // Set the prototype explicitly for instanceof checks to work
     Object.setPrototypeOf(this, AppError.prototype);
   }
@@ -96,10 +96,7 @@ export class ValidationError extends AppError {
  * Not Found Errors
  */
 export class NotFoundError extends AppError {
-  constructor(
-    resource: string,
-    errorCode: ErrorCode = ErrorCode.INTERNAL_ERROR
-  ) {
+  constructor(resource: string, errorCode: ErrorCode = ErrorCode.INTERNAL_ERROR) {
     super(`${resource} not found`, HttpStatus.NOT_FOUND, errorCode);
     Object.setPrototypeOf(this, NotFoundError.prototype);
   }
@@ -189,7 +186,7 @@ export class BadRequestError extends AppError {
 
 /**
  * Error Response Formatter
- * 
+ *
  * Formats errors consistently for API responses
  */
 export interface ErrorResponse {
@@ -240,7 +237,3 @@ export function isAppError(error: any): error is AppError {
 export function isOperationalError(error: any): boolean {
   return isAppError(error) && error.isOperational;
 }
-
-
-
-

@@ -5,14 +5,14 @@ const repoLogger = createChildLogger({ module: 'repository', service: 'ProfileRe
 
 /**
  * Profile Repository
- * 
+ *
  * Handles all database operations for UserProfile model
  * Separates data access from business logic
  */
 
 /**
  * Find a profile by user ID
- * 
+ *
  * @param userId - User's ID
  * @returns UserProfile or null if not found
  */
@@ -25,7 +25,7 @@ export async function findProfileByUserId(userId: string) {
 
 /**
  * Create a new profile for a user
- * 
+ *
  * @param userId - User's ID
  * @param data - Profile data
  * @returns Created UserProfile
@@ -65,7 +65,7 @@ export async function createProfile(
 
 /**
  * Update a user's profile
- * 
+ *
  * @param userId - User's ID
  * @param data - Profile data to update
  * @returns Updated UserProfile
@@ -94,7 +94,7 @@ export async function updateProfile(
 
 /**
  * Delete a user's profile
- * 
+ *
  * @param userId - User's ID
  * @returns Deleted UserProfile
  */
@@ -107,9 +107,9 @@ export async function deleteProfile(userId: string) {
 
 /**
  * Create or update a user's profile (upsert)
- * 
+ *
  * If profile exists, update it. If not, create it.
- * 
+ *
  * @param userId - User's ID
  * @param data - Profile data
  * @returns UserProfile (created or updated)
@@ -141,5 +141,3 @@ export async function upsertProfile(
     },
   });
 }
-
-
