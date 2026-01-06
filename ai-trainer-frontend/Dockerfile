@@ -68,3 +68,4 @@ ENTRYPOINT ["dumb-init", "--"]
 # Start Next.js application
 CMD ["npm", "start"]
 
+
