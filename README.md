@@ -1,4 +1,4 @@
-# 🏋️ AI Fitness Trainer
+# 🏋️ AI Personal Trainer
 
 A full-stack AI-powered personal fitness trainer application that provides personalized workout plans, nutrition advice, and progress tracking through an intelligent chat interface.
 
