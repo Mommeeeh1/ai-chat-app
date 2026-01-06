@@ -48,8 +48,6 @@ logs
 .editorconfig
 .prettierrc
 .eslintrc
-tsconfig.json
 eslint.config.mjs
-postcss.config.mjs
 
 

@@ -49,7 +49,6 @@ logs
 .editorconfig
 .prettierrc
 .eslintrc
-tsconfig.json
 jest.config.js
 
 
