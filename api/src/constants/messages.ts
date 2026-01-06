@@ -75,5 +75,3 @@ export const SUCCESS_MESSAGES = {
   DATA_DELETED: 'Data deleted successfully',
 } as const;
 
-
-
